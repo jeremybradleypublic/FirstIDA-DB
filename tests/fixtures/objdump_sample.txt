@@ -1,0 +1,12 @@
+sample.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 <addtwo>:
+   0:	8d 04 37             	lea    (%rdi,%rsi,1),%eax
+   4:	c3                   	ret
+
+0000000000000010 <_Z3addii>:
+  10:	8d 04 37             	lea    (%rdi,%rsi,1),%eax
+  14:	c3                   	ret
