@@ -50,8 +50,8 @@ def run(repo_dir, repo=None, db_path="dataset/pairs.db",
             if not records:
                 continue
             for compiler in compilers:
-                labels.setdefault((compiler, lang),
-                                  compile_mod.compiler_label(tc, compiler, lang))
+                if (compiler, lang) not in labels:
+                    labels[(compiler, lang)] = compile_mod.compiler_label(tc, compiler, lang)
                 label = labels[(compiler, lang)]
                 for opt in opt_levels:
                     res = compile_mod.compile_tu(tc, rel, compiler, opt, lang, incs)
