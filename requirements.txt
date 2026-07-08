@@ -1,0 +1,4 @@
+tree-sitter>=0.23,<0.24
+tree-sitter-c>=0.23,<0.24
+tree-sitter-cpp>=0.23,<0.24
+pytest>=8,<9
