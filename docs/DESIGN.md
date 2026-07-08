@@ -146,7 +146,8 @@ Multi-arch data improves generalization but multiplies volume and toolchain surf
 
 ### 4.3 Compiler
 
-**Chosen (v1):** GCC (`gcc`/`g++`) in the container. Clang is the obvious second dimension.
+**Chosen (v1):** **both GCC (`gcc`/`g++`) and Clang (`clang`/`clang++`)** in the container.
+Each function is compiled by both, so `compiler` is a real diversity axis from day one.
 
 Different compilers lower the *same* source to *different* idioms:
 
@@ -383,7 +384,7 @@ clone. The compiler is version-pinned via the Docker image so regenerated data i
 ## 9. Out of scope (YAGNI for v1)
 
 - Architectures other than x86-64; syntax other than AT&T.
-- Compilers other than GCC (Clang is the first planned extension).
+- Compilers other than GCC and Clang (e.g. MSVC/ICC).
 - LTO, `-march=native`, and stripped-style X rendering (all noted as future dimensions).
 - DWARF-line-table pairing (future recall upgrade).
 - Cross-repo semantic dedup and automated train/test splitting.
