@@ -291,13 +291,37 @@ discover repos ─> for each repo: ─┬─ download (shallow) ─> run_pipelin
 `harvest.py` is the corpus driver; `scrape.py` handles discovery + download. The persistent
 toolchain container is started once and reused across all repos.
 
-### Discovery (`scrape.py`)
+### Discovery & repo-selection strategy (`scrape.py`)
 
-- **GitHub Search API** filtered by `language:C` / `language:C++`, with knobs for stars,
-  size, recent activity, and (optionally) **license** — permissive-only is a supported
-  filter so the corpus is clean for downstream ML training.
-- **Curated URL list** — a plain text file of repo URLs, for reproducible named corpora.
-- Both paths converge on a stream of `{url, default_branch}` records.
+**Auth:** the scraper shells out to the already-authenticated **`gh` CLI** (`gh search
+repos`, `gh api`, `gh repo clone`), which reads its token from the OS keyring. No token
+touches our code, the DB, or git. Fallback: `GITHUB_TOKEN=$(gh auth token)` at runtime for
+any library that wants the raw token.
+
+**Selection policy (locked):**
+
+- **License:** permissive only — MIT, BSD-2/3, Apache-2.0, zlib, ISC — for clean training
+  provenance.
+- **Quality floor:** `stars >= 10`, `fork:false`, `archived:false`, `pushed:>2021`
+  (maintained), plus a repo-size band (skip trivially tiny and multi-GB monorepos).
+- **Diversity:** separate `language:C` and `language:C++` sweeps, crossed with **domain
+  topics** (compression, cryptography, parsers, databases, networking, embedded, graphics/
+  image, math, OS/kernel, CLI) so the function distribution is broad, not a monoculture.
+
+**Breaking the 1,000-results-per-query cap** — the key mechanic for reaching *thousands* of
+repos. GitHub Search returns at most 1,000 hits per query, so `scrape.py` **partitions** the
+space into **star buckets** (`10..50`, `50..200`, `200..1000`, `>1000`) crossed with
+language and topic, keeps each slice under the cap, and unions the results.
+
+**De-duplication before download:** skip URLs already in the `repos` ledger; cap repos
+per owner so one org can't dominate; optionally skip names matching heavily-vendored libs
+(zlib/sqlite/stb) that inflate duplicate functions (`pair_hash` still collapses exact dups).
+
+**Curated URL list** — a plain text file of repo URLs is also supported, for reproducible
+named corpora. All paths converge on a stream of `{url, default_branch, license}` records.
+
+**Yield feedback (future):** track pairs-per-repo and deprioritize classes that return
+near-empty (e.g., header-only), so the sweep grows more efficient over time.
 
 ### Download strategy
 
@@ -323,9 +347,9 @@ sweeping thousands of repos feasible on a laptop.
 
 ### Robustness & etiquette
 
-- **Rate limits:** GitHub allows ~60 unauthenticated vs ~5000 authenticated requests/hour;
-  `scrape.py` reads a `GITHUB_TOKEN` from the environment and backs off on `403`/secondary
-  limits. (Token handling stays out of the DB and out of git.)
+- **Rate limits:** authenticating via `gh` gives the ~5000 requests/hour tier (vs ~60
+  unauthenticated); cloning public repos over HTTPS doesn't count against the API limit.
+  `scrape.py` backs off on `403`/secondary-limit responses.
 - **Failure isolation:** a repo that fails to download or compile is marked `failed` with a
   reason; the sweep continues. No single bad repo aborts the corpus build.
 - **Concurrency (future):** v1 processes repos sequentially for simplicity; the container
