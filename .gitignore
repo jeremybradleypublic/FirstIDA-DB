@@ -5,6 +5,8 @@ first_example/zlib/
 # Generated dataset artifacts (reproducible via the pipeline)
 dataset/*.db
 dataset/*.db-journal
+dataset/*.db-wal
+dataset/*.db-shm
 dataset/*.sqlite
 
 # Build / scratch
@@ -12,6 +14,8 @@ dataset/*.sqlite
 *.obj
 scratch/
 build/
+.superpowers/
+tests/tmp*/
 
 # Python
 __pycache__/
