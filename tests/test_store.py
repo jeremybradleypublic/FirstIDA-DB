@@ -37,6 +37,32 @@ def test_record_skip(tmp_path):
     assert n == 1
 
 
+def test_pairs_labeled_view_names_the_two_sources(tmp_path):
+    conn = _mk(tmp_path)
+    store.migrate(conn)
+    store.insert_pair(conn, origin="harvest", **_args(func_name="h"))
+    store.insert_pair(conn, origin="gen:hybrid", **_args(func_name="g", asm_text="x"))
+    store.insert_pair(conn, origin="gen:direct", **_args(func_name="d", asm_text="y"))
+    got = dict(conn.execute(
+        "SELECT source_system, COUNT(*) FROM pairs_labeled GROUP BY source_system"
+    ).fetchall())
+    assert got == {"git-scraper": 1, "generator": 2}
+
+
+def test_export_sources_writes_tsv(tmp_path):
+    conn = _mk(tmp_path)
+    store.migrate(conn)
+    store.ensure_repo_queued(conn, "https://github.com/a/b", "mit", 42)
+    rid = conn.execute("SELECT id FROM repos WHERE url='https://github.com/a/b'").fetchone()[0]
+    store.mark_repo(conn, rid, "done", n_pairs=5, commit_sha="abc123")
+    path = str(tmp_path / "src.tsv")
+    p, n = store.export_sources(conn, path)
+    assert (p, n) == (path, 1)
+    text = open(path, encoding="utf-8").read()
+    assert text.splitlines()[0] == "url\tstatus\tstars\tlicense\tcommit_sha\tn_pairs\tprocessed_at"
+    assert "https://github.com/a/b\tdone\t42\tmit\tabc123\t5\t" in text
+
+
 import sqlite3
 import threading
 

@@ -138,3 +138,32 @@ python -m pipeline.gallery --all        # include harvested rows too
 ```
 
 The gallery is written to `dataset/gallery.html` (gitignored; rebuild anytime).
+
+### Running both sources at once
+
+`scripts/run_all.sh` runs the git scraper and the generator **in parallel in one
+terminal**, both writing the same `dataset/pairs.db` (safe — WAL + `busy_timeout`).
+Each stream's output is prefixed (`[scraper]` / `[generator]`); when both finish
+it prints the source split and opens the gallery.
+
+```bash
+scripts/run_all.sh                       # 10 repos + 200 generated funcs
+scripts/run_all.sh --repos 30 --gen 500 --route hybrid
+scripts/run_all.sh --here                # in this terminal instead of a new window
+```
+
+### Telling the two data sources apart
+
+`pairs.db` self-documents provenance. Every row has an `origin`
+(`harvest` | `gen:direct` | `gen:hybrid`), and the **`pairs_labeled`** view adds a
+coarse `source_system` column so it's obvious at a glance:
+
+```sql
+SELECT source_system, COUNT(*) FROM pairs_labeled GROUP BY source_system;
+--  git-scraper | 84974      (repos mined by the scraper)
+--  generator   |   298      (synthesized by disasmgen)
+```
+
+The scraper also writes **`dataset/sources_used.tsv`** — the list of every git
+repo it used (url, status, stars, license, commit, n_pairs) — after each run, or
+on demand with `python -m pipeline.harvest --export-sources`.

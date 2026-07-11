@@ -99,6 +99,15 @@ def migrate(conn) -> None:
     _add_column_if_missing(conn, "repos", "stars", "INTEGER")
     _add_column_if_missing(conn, "pairs", "origin", "TEXT")
     conn.execute("UPDATE pairs SET origin='harvest' WHERE origin IS NULL")
+    # Self-documenting view: anyone opening pairs.db sees a coarse source_system
+    # column that names WHERE each pair came from — the git scraper vs. the
+    # synthetic generator — without having to know the origin encoding.
+    conn.execute("""CREATE VIEW IF NOT EXISTS pairs_labeled AS
+        SELECT *, CASE
+            WHEN origin = 'harvest'   THEN 'git-scraper'
+            WHEN origin LIKE 'gen:%'  THEN 'generator'
+            ELSE COALESCE(origin, 'unknown') END AS source_system
+        FROM pairs""")
     conn.commit()
 
 
@@ -148,3 +157,24 @@ def ledger_counts(conn) -> dict:
     d = {r[0]: r[1] for r in conn.execute("SELECT status, COUNT(*) FROM repos GROUP BY status")}
     return {"queued": d.get("queued", 0), "running": d.get("running", 0),
             "done": d.get("done", 0), "failed": d.get("failed", 0)}
+
+
+def all_repos(conn):
+    """Every repo the scraper has touched, most-productive first."""
+    return conn.execute(
+        "SELECT url, status, stars, license, commit_sha, n_pairs, processed_at "
+        "FROM repos ORDER BY (n_pairs IS NULL), n_pairs DESC, id").fetchall()
+
+
+def export_sources(conn, path):
+    """Write the list of git repos the scraper used to a TSV file (for storage/
+    provenance). Returns (path, count)."""
+    import os
+    rows = all_repos(conn)
+    os.makedirs(os.path.dirname(os.path.abspath(path)) or ".", exist_ok=True)
+    cols = ("url", "status", "stars", "license", "commit_sha", "n_pairs", "processed_at")
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write("\t".join(cols) + "\n")
+        for r in rows:
+            fh.write("\t".join("" if r[c] is None else str(r[c]) for c in cols) + "\n")
+    return path, len(rows)

@@ -16,4 +16,13 @@ if [ ! -x "$ROOT/.venv/bin/python" ]; then
 fi
 
 "$ROOT/.venv/bin/python" -m pipeline.gallery --out "$OUT" "$@"
-open "$OUT" 2>/dev/null || echo "open it: $OUT"
+
+# Auto-open in the default browser (macOS `open`, Linux `xdg-open`, else Python).
+if command -v open >/dev/null 2>&1; then
+  open "$OUT"
+elif command -v xdg-open >/dev/null 2>&1; then
+  xdg-open "$OUT"
+else
+  "$ROOT/.venv/bin/python" -m webbrowser -t "file://$OUT" || true
+fi
+echo "opened $OUT"

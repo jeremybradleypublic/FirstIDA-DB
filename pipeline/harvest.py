@@ -17,6 +17,9 @@ from pipeline.journal import Journal
 # anywhere else mounts as an empty /src inside the toolchain container.
 HOME = os.path.expanduser("~")
 SCRATCH_ROOT = os.path.join(HOME, ".cache", "disasm_harvest")
+# A stored list of every git repo the scraper used (url/status/commit/n_pairs),
+# rewritten from the ledger after each run for provenance.
+SOURCES_PATH = "dataset/sources_used.tsv"
 
 _MIN_FREE_GB = 5.0
 _MAX_REPO_MB = 500.0
@@ -177,6 +180,12 @@ def harvest(db_path="dataset/pairs.db", limit=None, emit=lambda e: None,
         except KeyboardInterrupt:
             emit({"type": "log", "level": "warn", "msg": "aborted"})
             journal.event("aborted by user", level="warn")
+        try:
+            spath, n = store.export_sources(conn, SOURCES_PATH)
+            emit({"type": "log", "level": "info", "msg": f"sources list: {n} repos → {spath}"})
+            journal.event(f"wrote sources list: {n} repos → {spath}")
+        except Exception as e:   # never let bookkeeping abort the run
+            journal.event(f"sources export failed: {str(e)[:120]}", level="warn")
         conn.close()
         journal.event(f"harvest finished: {processed} repo(s) processed")
         return {"processed": processed}
@@ -203,9 +212,20 @@ def main():
     ap.add_argument("--no-discover", action="store_true", help="drain existing queue only")
     ap.add_argument("--max-files", type=int, default=None,
                     help="skip repos with more than N source files (keeps the crawl moving)")
+    ap.add_argument("--export-sources", action="store_true",
+                    help="write the list of git repos used to the sources TSV and exit")
     args = ap.parse_args()
 
     _install_signals()
+
+    if args.export_sources:
+        conn = store.connect(args.db)
+        store.init_schema(conn)
+        store.migrate(conn)
+        path, n = store.export_sources(conn, SOURCES_PATH)
+        conn.close()
+        print(f"wrote {path} ({n} repos)")
+        return
 
     if args.discover_only:
         n = scrape.discover(args.db, target=args.limit, emit=lambda e: _plain(e))
