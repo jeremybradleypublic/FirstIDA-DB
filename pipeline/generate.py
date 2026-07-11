@@ -200,6 +200,17 @@ def generate(count=100, route="both", db_path="dataset/pairs.db", seed=0,
         journal.close()
 
 
+def _open_path(path):
+    """Best-effort: open a file in the OS default app (a browser for .html)."""
+    opener = "open" if sys.platform == "darwin" else "xdg-open"
+    try:
+        subprocess.Popen([opener, path],
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return True
+    except OSError:
+        return False
+
+
 def refresh_graph():
     """Refresh the dbgraph knowledge graph after a run. `origin` is now a
     queryable dimension of the dataset graph (see db-graph/README.md)."""
@@ -252,7 +263,12 @@ def main():
           f"dedup={totals['dedup']}")
     if not args.no_gallery:
         out = gallery.build_gallery(db_path=args.db)
-        print(f"gallery: {out}  (open in a browser)")
+        # Auto-open the gallery in the browser for interactive runs; stay quiet
+        # in headless/CI mode (--no-dashboard).
+        if not args.no_dashboard and _open_path(out):
+            print(f"gallery: opened {out} in your browser")
+        else:
+            print(f"gallery: {out}  (open in a browser)")
     refresh_graph()
 
 
