@@ -12,6 +12,9 @@ dataset/*.sqlite
 # dbgraph working output (the curated copy is committed under db-graph/)
 dataset/dbgraph-out/
 
+# Generated HTML gallery of synthetic pairs (rebuild with scripts/gallery.sh)
+dataset/gallery.html
+
 # Build / scratch
 *.o
 *.obj
