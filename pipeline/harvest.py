@@ -71,7 +71,7 @@ def _repo_name(url):
     return "/".join(url.rstrip("/").split("/")[-2:])
 
 
-def process_one(conn, row, db_path, emit, journal=None):
+def process_one(conn, row, db_path, emit, journal=None, max_files=None):
     repo_id, url = row["id"], row["url"]
     name = _repo_name(url)
     dest = os.path.join(SCRATCH_ROOT, name.replace("/", "__"))
@@ -108,6 +108,14 @@ def process_one(conn, row, db_path, emit, journal=None):
             emit({"type": "repo_done", "repo": name, "status": "failed", "reason": "too large"})
             return
 
+        if max_files:
+            n_src = len(run_pipeline.find_sources(dest))
+            if n_src > max_files:
+                jevent(f"skipped {name}: {n_src} source files > {max_files}", level="warn")
+                store.mark_repo(conn, repo_id, "failed", reason=f"too many files ({n_src})")
+                emit({"type": "repo_done", "repo": name, "status": "failed", "reason": f"{n_src} files"})
+                return
+
         emit({"type": "stage", "repo": name, "stage": "compiling"})
         jevent(f"compiling {name} ({size_mb:.0f}MB @ {sha[:10] if sha else '?'})")
         stats = run_pipeline.run(dest, repo=name, db_path=db_path,
@@ -129,7 +137,7 @@ def process_one(conn, row, db_path, emit, journal=None):
 
 
 def harvest(db_path="dataset/pairs.db", limit=None, emit=lambda e: None,
-            discover_first=True, target=50):
+            discover_first=True, target=50, max_files=None):
     assert SCRATCH_ROOT.startswith(HOME + os.sep), "scratch root must be under $HOME"
     os.makedirs(SCRATCH_ROOT, exist_ok=True)
     for d in os.listdir(SCRATCH_ROOT):          # sweep stale checkouts
@@ -163,7 +171,7 @@ def harvest(db_path="dataset/pairs.db", limit=None, emit=lambda e: None,
                 if row is None:
                     journal.event("queue empty")
                     break
-                process_one(conn, row, db_path, emit, journal=journal)
+                process_one(conn, row, db_path, emit, journal=journal, max_files=max_files)
                 processed += 1
                 emit({"type": "progress", "processed": processed, **store.ledger_counts(conn)})
         except KeyboardInterrupt:
@@ -193,6 +201,8 @@ def main():
     ap.add_argument("--no-dashboard", action="store_true", help="plain line logging (CI/tests)")
     ap.add_argument("--discover-only", action="store_true", help="only queue repos, don't harvest")
     ap.add_argument("--no-discover", action="store_true", help="drain existing queue only")
+    ap.add_argument("--max-files", type=int, default=None,
+                    help="skip repos with more than N source files (keeps the crawl moving)")
     args = ap.parse_args()
 
     _install_signals()
@@ -204,7 +214,8 @@ def main():
 
     def work(emit):
         return harvest(db_path=args.db, limit=args.limit, emit=emit,
-                       discover_first=not args.no_discover, target=args.limit)
+                       discover_first=not args.no_discover, target=args.limit,
+                       max_files=args.max_files)
 
     if args.no_dashboard:
         work(_plain)
