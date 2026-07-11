@@ -1,0 +1,32 @@
+{
+  "3963d5f454ba1b58": {
+    "gist": "The core dataset table: 642 rows of matched (C/C++ source, x86-64 disassembly) function pairs from zlib, each tagged with compiler, optimization level, and dedup hash.",
+    "keywords": [
+      "source-asm pairs",
+      "zlib",
+      "x86_64",
+      "objdump",
+      "compiler optimization levels"
+    ]
+  },
+  "3f7cc85ea0c20d83": {
+    "gist": "A failure log of 50 translation units that could not be compiled during the build sweep, recording the repo, file, opt level, and compiler error reason.",
+    "keywords": [
+      "compile failures",
+      "build sweep",
+      "error log",
+      "zlib",
+      "opt_level"
+    ]
+  },
+  "49ace683507b76d3": {
+    "gist": "An empty provenance ledger meant to track repositories processed in a future large-scale GitHub crawl (Phase 2), recording URL, commit SHA, license, status, and pairs contributed.",
+    "keywords": [
+      "provenance",
+      "GitHub crawl",
+      "Phase 2",
+      "repo ledger",
+      "empty table"
+    ]
+  }
+}

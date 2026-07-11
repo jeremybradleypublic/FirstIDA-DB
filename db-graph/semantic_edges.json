@@ -1,0 +1,20 @@
+[
+  {
+    "source": "table:pairs",
+    "target": "table:skipped",
+    "relation": "complementary outcomes of same compile sweep",
+    "confidence": "INFERRED"
+  },
+  {
+    "source": "table:repos",
+    "target": "table:pairs",
+    "relation": "planned provenance source for future pairs",
+    "confidence": "AMBIGUOUS"
+  },
+  {
+    "source": "table:repos",
+    "target": "table:skipped",
+    "relation": "planned provenance source for future skipped entries",
+    "confidence": "AMBIGUOUS"
+  }
+]

@@ -1,0 +1,117 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>dbgraph</title>
+<style>
+ body{margin:0;font:13px/1.45 ui-monospace,Menlo,monospace;background:#0d1117;color:#c9d1d9;display:flex;height:100vh;overflow:hidden}
+ #graph{flex:1}
+ #panel{width:360px;border-left:1px solid #30363d;padding:14px;overflow:auto;display:none;background:#0d1117}
+ #search{position:fixed;top:10px;left:10px;background:#161b22;border:1px solid #30363d;color:#c9d1d9;padding:6px 10px;border-radius:6px;width:240px;font:inherit;z-index:2}
+ circle.theme{fill:#1f6feb33;stroke:#388bfd;stroke-width:1.5;cursor:pointer}
+ circle.theme.open{fill:#1f6feb55}
+ circle.unit{fill:#238636;stroke:#2ea043;cursor:pointer}
+ circle.unit.hit{stroke:#f0f6fc;stroke-width:3}
+ text{fill:#c9d1d9;pointer-events:none;font-size:12px}
+ text.unit-label{font-size:10px;fill:#8b949e}
+ line{stroke-width:1.5;opacity:.7}
+ line.EXTRACTED{stroke:#58a6ff}
+ line.INFERRED{stroke:#d29922;stroke-dasharray:6 4}
+ line.AMBIGUOUS{stroke:#8b949e;stroke-dasharray:2 4}
+ .kw{display:inline-block;background:#21262d;border-radius:4px;padding:1px 6px;margin:2px;font-size:11px}
+ pre{white-space:pre-wrap;background:#161b22;padding:8px;border-radius:6px;max-height:220px;overflow:auto;font-size:11px}
+ #panel h2{margin:4px 0}#panel h3{margin:10px 0 4px;color:#8b949e;font-size:11px;text-transform:uppercase}
+ .edge-row{font-size:11px;margin:2px 0}
+ .conf{font-size:10px;border:1px solid #30363d;border-radius:3px;padding:0 4px;margin-left:4px}
+</style></head><body>
+<input id="search" placeholder="search units...">
+<svg id="graph" width="100%" height="100%"></svg>
+<div id="panel"></div>
+<script>
+const DATA = {"themes": [{"id": 0, "name": "Disassembly Pair Corpus", "summary": "The complete FirstIDA-DB dataset: matched (C/C++ source, x86-64 disassembly) function pairs, the log of translation units that failed to compile, and the provenance ledger for future large-scale crawling. Together these three tables record what was produced, what was dropped, and where it came from.", "units": [{"id": "table:pairs", "name": "pairs", "kind": "table", "gist": "The core dataset table: 642 rows of matched (C/C++ source, x86-64 disassembly) function pairs from zlib, each tagged with compiler, optimization level, and dedup hash.", "keywords": ["source-asm pairs", "zlib", "x86_64", "objdump", "compiler optimization levels"], "stats": {"rows": 642, "columns": 15}, "sample": "CREATE TABLE pairs (\n    id          INTEGER PRIMARY KEY,\n    repo        TEXT, file_path TEXT, func_name TEXT, signature TEXT, lang TEXT,\n    arch        TEXT, opt_level TEXT, obj_format TEXT, compiler TEXT,\n    source_text TEXT, asm_text TEXT,\n    source_hash TEXT, asm_hash TEXT,\n    pair_hash   TEXT UNIQUE\n)\n-- columns: id, repo, file_path, func_name, signature, lang, arch, opt_level, obj_format, compiler, source_text, asm_text, source_hash, asm_hash, pair_hash\n-- 642 rows, sample:\n(1, 'zlib', 'adler32.c', 'adler32_combine64', 'uLong ZEXPORT adler32_combine64(uLong adler1, uLong adler2, z_off64_t len2)', 'c', 'x86_64', 'O0', 'elf', 'gcc-12.2.0', 'uLong ZEXPORT adler32_combine64(uLong adler1, uLong adler2, z_off64_t len2) {\\n    return adler32_combine_(adler1, adler2, len2);\\n}', '<adler32_combine64>:\\n 767:\\t55                   \\tpush   %rbp\\n 768:\\t48 89 e5             \\tmov    %rsp,%rbp\\n 76b:\\t48 83 ec 18          \\tsub    $0x18,%rsp\\n 76f:\\t48 89 7d f8          \\tmov    %rdi,-0x8(%rbp)\\n 773:\\t48 89 75 f0          \\tmov    %rsi,-0x10(%rbp)\\n 777:\\t48 89 55 e8          \\tmov    %rdx,-0x18(%rbp)\\n 77b:\\t48 8b 55 e8          \\tmov    -0x18(%rbp),%rdx\\n 77f:\\t48 8b 4d f0       "}, {"id": "table:skipped", "name": "skipped", "kind": "table", "gist": "A failure log of 50 translation units that could not be compiled during the build sweep, recording the repo, file, opt level, and compiler error reason.", "keywords": ["compile failures", "build sweep", "error log", "zlib", "opt_level"], "stats": {"rows": 50, "columns": 5}, "sample": "CREATE TABLE skipped (\n    id INTEGER PRIMARY KEY, repo TEXT, file_path TEXT, opt_level TEXT, reason TEXT\n)\n-- columns: id, repo, file_path, opt_level, reason\n-- 50 rows, sample:\n(1, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'O0', '/src/contrib/crc32vx/crc32_vx.c:20:10: fatal error: vecintrin.h: No such file or directory\\n   20 | #include <vecintrin.h>\\n      |          ^~~~~~~~~~~~~\\ncompilation terminated.')\n(2, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'O1', '/src/contrib/crc32vx/crc32_vx.c:20:10: fatal error: vecintrin.h: No such file or directory\\n   20 | #include <vecintrin.h>\\n      |          ^~~~~~~~~~~~~\\ncompilation terminated.')\n(3, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'O2', '/src/contrib/crc32vx/crc32_vx.c:20:10: fatal error: vecintrin.h: No such file or directory\\n   20 | #include <vecintrin.h>\\n      |          ^~~~~~~~~~~~~\\ncompilation terminated.')\n(4, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'O3', '/src/contrib/crc32vx/crc32_vx.c:20:10: fatal error: vecintrin.h: No such file or directory\\n   20 | #include <vecintrin.h>\\n      |          ^~~~~~~~~~~~~\\ncompilation terminated.')\n(5, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'Os', '/src/contrib/crc32vx/crc32_vx.c:20:10: fatal err"}, {"id": "table:repos", "name": "repos", "kind": "table", "gist": "An empty provenance ledger meant to track repositories processed in a future large-scale GitHub crawl (Phase 2), recording URL, commit SHA, license, status, and pairs contributed.", "keywords": ["provenance", "GitHub crawl", "Phase 2", "repo ledger", "empty table"], "stats": {"rows": 0, "columns": 7}, "sample": "CREATE TABLE repos (\n    id INTEGER PRIMARY KEY, url TEXT, commit_sha TEXT, license TEXT,\n    status TEXT, n_pairs INTEGER, processed_at TEXT\n)\n-- columns: id, url, commit_sha, license, status, n_pairs, processed_at\n-- 0 rows, sample:\n"}]}], "edges": [{"source": "table:pairs", "target": "table:skipped", "relation": "shared_column:file_path", "confidence": "EXTRACTED"}, {"source": "table:pairs", "target": "table:skipped", "relation": "shared_column:opt_level", "confidence": "EXTRACTED"}, {"source": "table:pairs", "target": "table:skipped", "relation": "shared_column:repo", "confidence": "EXTRACTED"}, {"source": "table:pairs", "target": "table:skipped", "relation": "complementary outcomes of same compile sweep", "confidence": "INFERRED"}, {"source": "table:repos", "target": "table:pairs", "relation": "planned provenance source for future pairs", "confidence": "AMBIGUOUS"}, {"source": "table:repos", "target": "table:skipped", "relation": "planned provenance source for future skipped entries", "confidence": "AMBIGUOUS"}]};
+const svg = document.getElementById('graph'), panel = document.getElementById('panel');
+const NS = 'http://www.w3.org/2000/svg';
+const open = new Set(); let highlight = null;
+const unitTheme = {}, unitById = {};
+DATA.themes.forEach(t => t.units.forEach(u => { unitTheme[u.id] = t.id; unitById[u.id] = u; }));
+
+function el(tag, attrs, parent) {
+  const n = document.createElementNS(NS, tag);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  (parent || svg).appendChild(n); return n;
+}
+function positions() {
+  const W = svg.clientWidth, H = svg.clientHeight, cx = W/2, cy = H/2;
+  const R = Math.max(120, Math.min(W, H)/2 - 150);
+  const themePos = {}, unitPos = {};
+  DATA.themes.forEach((t, i) => {
+    const a = 2*Math.PI*i/DATA.themes.length - Math.PI/2;
+    const p = {x: cx + R*Math.cos(a), y: cy + R*Math.sin(a)};
+    themePos[t.id] = p;
+    if (open.has(t.id)) {
+      const r = 40 + 5*Math.sqrt(t.units.length);
+      t.units.forEach((u, j) => {
+        const ua = 2*Math.PI*j/t.units.length;
+        unitPos[u.id] = {x: p.x + r*Math.cos(ua), y: p.y + r*Math.sin(ua)};
+      });
+    }
+  });
+  return {themePos, unitPos};
+}
+function endpoint(id, pos) { return pos.unitPos[id] || pos.themePos[unitTheme[id]]; }
+function render() {
+  svg.innerHTML = '';
+  const pos = positions(), agg = {};
+  DATA.edges.forEach(e => {
+    const a = endpoint(e.source, pos), b = endpoint(e.target, pos);
+    if (!a || !b || (a.x === b.x && a.y === b.y)) return;
+    const key = [a.x, a.y, b.x, b.y].join(',');
+    if (!agg[key]) agg[key] = {a, b, conf: e.confidence, labels: []};
+    agg[key].labels.push(e.relation + ' [' + e.confidence + ']');
+    if (e.confidence === 'EXTRACTED') agg[key].conf = 'EXTRACTED';
+  });
+  Object.values(agg).forEach(g => {
+    const l = el('line', {x1: g.a.x, y1: g.a.y, x2: g.b.x, y2: g.b.y, class: g.conf});
+    const t = document.createElementNS(NS, 'title');
+    t.textContent = g.labels.join('\n'); l.appendChild(t);
+  });
+  DATA.themes.forEach(t => {
+    const p = pos.themePos[t.id];
+    const c = el('circle', {cx: p.x, cy: p.y, r: 18 + 6*Math.sqrt(t.units.length),
+                            class: 'theme' + (open.has(t.id) ? ' open' : '')});
+    c.onclick = () => { open.has(t.id) ? open.delete(t.id) : open.add(t.id); render(); };
+    el('text', {x: p.x, y: p.y - 24 - 6*Math.sqrt(t.units.length), 'text-anchor': 'middle'})
+      .textContent = t.name + ' (' + t.units.length + ')';
+    if (open.has(t.id)) t.units.forEach(u => {
+      const up = pos.unitPos[u.id];
+      const uc = el('circle', {cx: up.x, cy: up.y, r: 6,
+                               class: 'unit' + (highlight === u.id ? ' hit' : '')});
+      uc.onclick = ev => { ev.stopPropagation(); showUnit(u); };
+      el('text', {x: up.x + 8, y: up.y + 3, class: 'unit-label'}).textContent = u.name;
+    });
+  });
+}
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+function showUnit(u) {
+  panel.style.display = 'block';
+  const edges = DATA.edges.filter(e => e.source === u.id || e.target === u.id);
+  panel.innerHTML = '<h2>' + esc(u.name) + '</h2><div>' + esc(u.kind) + '</div>'
+    + '<h3>gist</h3><div>' + esc(u.gist) + '</div>'
+    + '<h3>keywords</h3>' + (u.keywords || []).map(k => '<span class="kw">' + esc(k) + '</span>').join('')
+    + '<h3>stats</h3><pre>' + esc(JSON.stringify(u.stats, null, 1)) + '</pre>'
+    + '<h3>edges</h3>' + edges.map(e =>
+        '<div class="edge-row">' + esc(unitById[e.source === u.id ? e.target : e.source]?.name || '?')
+        + ' — ' + esc(e.relation) + '<span class="conf">' + esc(e.confidence) + '</span></div>').join('')
+    + '<h3>sample</h3><pre>' + esc(u.sample) + '</pre>';
+}
+document.getElementById('search').oninput = ev => {
+  const q = ev.target.value.toLowerCase(); highlight = null;
+  if (q.length >= 2) {
+    for (const id in unitById) {
+      if (unitById[id].name.toLowerCase().includes(q)) {
+        highlight = id; open.add(unitTheme[id]); showUnit(unitById[id]); break;
+      }
+    }
+  }
+  render();
+};
+window.onresize = render;
+render();
+</script></body></html>

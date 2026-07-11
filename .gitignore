@@ -9,6 +9,9 @@ dataset/*.db-wal
 dataset/*.db-shm
 dataset/*.sqlite
 
+# dbgraph working output (the curated copy is committed under db-graph/)
+dataset/dbgraph-out/
+
 # Build / scratch
 *.o
 *.obj

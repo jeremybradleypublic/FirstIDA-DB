@@ -1,0 +1,20 @@
+[
+  {
+    "source": "table:pairs",
+    "target": "table:skipped",
+    "relation": "shared_column:file_path",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:skipped",
+    "relation": "shared_column:opt_level",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:skipped",
+    "relation": "shared_column:repo",
+    "confidence": "EXTRACTED"
+  }
+]

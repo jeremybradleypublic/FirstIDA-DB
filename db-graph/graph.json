@@ -1,0 +1,66 @@
+{
+  "nodes": [
+    {
+      "id": "table:pairs",
+      "name": "pairs",
+      "kind": "table",
+      "theme": 0
+    },
+    {
+      "id": "table:repos",
+      "name": "repos",
+      "kind": "table",
+      "theme": 0
+    },
+    {
+      "id": "table:skipped",
+      "name": "skipped",
+      "kind": "table",
+      "theme": 0
+    }
+  ],
+  "edges": [
+    {
+      "source": "table:pairs",
+      "target": "table:skipped",
+      "relations": [
+        [
+          "shared_column:file_path",
+          "EXTRACTED"
+        ],
+        [
+          "shared_column:opt_level",
+          "EXTRACTED"
+        ],
+        [
+          "shared_column:repo",
+          "EXTRACTED"
+        ],
+        [
+          "complementary outcomes of same compile sweep",
+          "INFERRED"
+        ]
+      ]
+    },
+    {
+      "source": "table:pairs",
+      "target": "table:repos",
+      "relations": [
+        [
+          "planned provenance source for future pairs",
+          "AMBIGUOUS"
+        ]
+      ]
+    },
+    {
+      "source": "table:skipped",
+      "target": "table:repos",
+      "relations": [
+        [
+          "planned provenance source for future skipped entries",
+          "AMBIGUOUS"
+        ]
+      ]
+    }
+  ]
+}
