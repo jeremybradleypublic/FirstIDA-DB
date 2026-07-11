@@ -99,3 +99,27 @@ Integration tests auto-skip when Docker/Colima is unavailable; start it with
 - **Rebuild the toolchain image:** `docker rmi disasm-toolchain:latest` then re-run.
 - **x86-64 emulation:** builds run under `--platform linux/amd64` (Rosetta); we only
   compile/disassemble, never execute, so this only affects compile latency.
+
+## Synthetic generator (`generator/` + `pipeline/generate.py`)
+
+Alongside the GitHub harvester there is a generative track: a native C++ tool
+`generator/disasmgen` (CMake; asmjit + zydis pinned via FetchContent) that
+prints JSONL and never touches the DB. Two routes:
+
+- **direct** — parameterized C/C++ templates; Python compiles them through the
+  existing container toolchain (gcc/clang x O0–Os) so the asm is real objdump
+  output. Rows get `origin='gen:direct'`.
+- **hybrid** — a tiny typed IR is pretty-printed to C *and* lowered by asmjit
+  to x86-64 bytes decoded by zydis. Correspondence by construction, no
+  compiler. Rows get `origin='gen:hybrid'` (`obj_format='rawx86_64'`,
+  `compiler='asmjit'`, `opt_level='none'`).
+
+Run it in its own Terminal window (safe in parallel with `scripts/collect.sh`;
+same `dataset/pairs.db`, own journal `dataset/journal-gen.jsonl`):
+
+```bash
+scripts/generate.sh --count 200 --route both
+scripts/journal.sh --path dataset/journal-gen.jsonl -f   # follow its journal
+```
+
+Harvested rows are backfilled with `origin='harvest'` by `store.migrate()`.
