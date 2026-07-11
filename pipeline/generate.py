@@ -23,6 +23,7 @@ import sys
 
 import pipeline.store as store
 import pipeline.run_pipeline as run_pipeline
+import pipeline.gallery as gallery
 from pipeline.journal import Journal
 
 HOME = os.path.expanduser("~")
@@ -93,6 +94,9 @@ def ingest_hybrid(conn, records, journal=None):
             source_text=rec["source_text"], asm_text=rec["asm_text"],
             origin="gen:hybrid")
         stats["pairs" if ok else "dedup"] += 1
+        if journal:   # stream each created function so it appears live
+            journal.event(f"{'new' if ok else 'dup'} {rec['func_name']}  "
+                          f"{rec['signature'][:80]}")
     if journal:
         journal.event(f"hybrid ingest: {stats['pairs']} pairs, "
                       f"{stats['dedup']} dedup")
@@ -123,6 +127,9 @@ def ingest_direct(records, db_path, emit=lambda e: None, journal=None):
     and never abort the run."""
     if not records:
         return {"pairs": 0, "skipped": 0, "files": 0}
+    if journal:   # stream each synthesized function so it appears live
+        for rec in records:
+            journal.event(f"gen {rec['func_name']}  {rec['signature'][:80]}")
     dest = write_direct_repo(records)
     try:
         return run_pipeline.run(
@@ -222,6 +229,8 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--no-dashboard", action="store_true",
                     help="plain line logging (CI/tests)")
+    ap.add_argument("--no-gallery", action="store_true",
+                    help="skip building the HTML gallery after the run")
     args = ap.parse_args()
 
     def work(emit):
@@ -241,6 +250,9 @@ def main():
             totals = dashboard.run_with_dashboard(work, limit=args.count)
     print(f"pairs={totals['pairs']} skipped={totals['skipped']} "
           f"dedup={totals['dedup']}")
+    if not args.no_gallery:
+        out = gallery.build_gallery(db_path=args.db)
+        print(f"gallery: {out}  (open in a browser)")
     refresh_graph()
 
 

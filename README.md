@@ -123,3 +123,18 @@ scripts/journal.sh --path dataset/journal-gen.jsonl -f   # follow its journal
 ```
 
 Harvested rows are backfilled with `origin='harvest'` by `store.migrate()`.
+
+### Seeing what was generated
+
+Each synthesized function streams into the run's journal/dashboard as it is
+created (name + signature), so you watch them appear live. After a run,
+`generate.py` also writes a self-contained **HTML gallery** of the generated
+`(source, asm)` pairs, laid out side by side:
+
+```bash
+scripts/gallery.sh                      # build + open newest 300 generated pairs
+scripts/gallery.sh --route hybrid       # just one route
+python -m pipeline.gallery --all        # include harvested rows too
+```
+
+The gallery is written to `dataset/gallery.html` (gitignored; rebuild anytime).
