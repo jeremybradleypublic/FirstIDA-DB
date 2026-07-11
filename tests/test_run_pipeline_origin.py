@@ -57,3 +57,25 @@ def test_origin_param_is_threaded(tmp_path, monkeypatch):
     assert stats["pairs"] == 1
     assert calls
     assert all(c["origin"] == "gen:direct" for c in calls)
+
+
+def test_run_migrates_legacy_db(tmp_path, monkeypatch):
+    """run() must be self-sufficient: on a pre-origin legacy pairs.db it adds
+    the column itself (real callers migrate, but standalone run() must too)."""
+    import sqlite3
+    db = str(tmp_path / "legacy.db")
+    raw = sqlite3.connect(db)
+    raw.executescript(
+        "CREATE TABLE pairs (id INTEGER PRIMARY KEY, func_name TEXT, "
+        "asm_text TEXT, source_text TEXT, pair_hash TEXT UNIQUE);"
+        "CREATE TABLE skipped (id INTEGER PRIMARY KEY, repo TEXT, "
+        "file_path TEXT, opt_level TEXT, reason TEXT);"
+        "CREATE TABLE repos (id INTEGER PRIMARY KEY, url TEXT, status TEXT);")
+    raw.close()
+    calls = []
+    _stub_pipeline(monkeypatch, calls)
+    rp.run(_mk_repo(tmp_path), repo="stub", db_path=db,
+           compilers=("gcc",), opt_levels=("O0",), origin="gen:direct")
+    conn = rp.store.connect(db)
+    cols = {r[1] for r in conn.execute("PRAGMA table_info(pairs)")}
+    assert "origin" in cols   # run() migrated the legacy DB on its own

@@ -36,6 +36,8 @@ def run(repo_dir, repo=None, db_path="dataset/pairs.db",
     os.makedirs(os.path.dirname(os.path.abspath(db_path)), exist_ok=True)
     conn = store.connect(db_path)
     store.init_schema(conn)
+    store.migrate(conn)   # self-sufficient: ensure the `origin` column exists
+                          # even when run standalone on a pre-migration DB
 
     sources = find_sources(repo_dir)
     incs = include_dirs_for(repo_dir)
