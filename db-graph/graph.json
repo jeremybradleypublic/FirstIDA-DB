@@ -39,6 +39,10 @@
         [
           "complementary outcomes of same compile sweep",
           "INFERRED"
+        ],
+        [
+          "failed-compile counterpart of successful pairs (same repo/file_path/opt_level space)",
+          "INFERRED"
         ]
       ]
     },
@@ -49,6 +53,10 @@
         [
           "planned provenance source for future pairs",
           "AMBIGUOUS"
+        ],
+        [
+          "source repo of pairs (repos.n_pairs counts them)",
+          "INFERRED"
         ]
       ]
     },
@@ -57,8 +65,16 @@
       "target": "table:repos",
       "relations": [
         [
+          "shared_column:reason",
+          "EXTRACTED"
+        ],
+        [
           "planned provenance source for future skipped entries",
           "AMBIGUOUS"
+        ],
+        [
+          "repo whose files were skipped",
+          "INFERRED"
         ]
       ]
     }
