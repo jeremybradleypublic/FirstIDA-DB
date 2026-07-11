@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS pairs (
     arch        TEXT, opt_level TEXT, obj_format TEXT, compiler TEXT,
     source_text TEXT, asm_text TEXT,
     source_hash TEXT, asm_hash TEXT,
-    pair_hash   TEXT UNIQUE
+    pair_hash   TEXT UNIQUE,
+    origin      TEXT
 );
 CREATE TABLE IF NOT EXISTS skipped (
     id INTEGER PRIMARY KEY, repo TEXT, file_path TEXT, opt_level TEXT, reason TEXT
@@ -29,6 +30,10 @@ def connect(db_path: str) -> sqlite3.Connection:
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
+    # The harvester and the generator write the same DB in parallel; WAL
+    # allows one writer at a time, and busy_timeout retries instead of
+    # raising an immediate "database is locked".
+    conn.execute("PRAGMA busy_timeout=5000")
     return conn
 
 
@@ -38,17 +43,18 @@ def init_schema(conn: sqlite3.Connection) -> None:
 
 
 def insert_pair(conn, *, repo, file_path, func_name, signature, lang, arch,
-                opt_level, obj_format, compiler, source_text, asm_text) -> bool:
+                opt_level, obj_format, compiler, source_text, asm_text,
+                origin='harvest') -> bool:
     source_hash = _sha1(source_text)
     asm_hash = _sha1(asm_text)
     pair_hash = _sha1(f"{func_name}\n{asm_text}\n{source_text}")
     cur = conn.execute(
         """INSERT OR IGNORE INTO pairs
            (repo,file_path,func_name,signature,lang,arch,opt_level,obj_format,
-            compiler,source_text,asm_text,source_hash,asm_hash,pair_hash)
-           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+            compiler,source_text,asm_text,source_hash,asm_hash,pair_hash,origin)
+           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
         (repo, file_path, func_name, signature, lang, arch, opt_level, obj_format,
-         compiler, source_text, asm_text, source_hash, asm_hash, pair_hash),
+         compiler, source_text, asm_text, source_hash, asm_hash, pair_hash, origin),
     )
     conn.commit()
     return cur.rowcount == 1
@@ -68,14 +74,31 @@ def count_pairs(conn) -> int:
 
 # --- repos ledger (Phase-2 harvest) ---------------------------------------
 
+def _add_column_if_missing(conn, table, col, decl) -> None:
+    """Add a column, tolerating a concurrent migrator that added it first.
+    The table_info check avoids the ALTER in the common case; the try/except
+    covers the cross-process race where two processes both see it missing and
+    both ALTER — busy_timeout only retries on locks, not on the logical
+    'duplicate column name' error the loser would otherwise raise uncaught."""
+    cols = {r[1] for r in conn.execute(f"PRAGMA table_info({table})")}
+    if col in cols:
+        return
+    try:
+        conn.execute(f"ALTER TABLE {table} ADD COLUMN {col} {decl}")
+    except sqlite3.OperationalError as e:
+        if "duplicate column name" not in str(e).lower():
+            raise
+
+
 def migrate(conn) -> None:
-    """Idempotent: make `repos.url` the dedup key and add harvest columns."""
+    """Idempotent PRAGMA-guarded migrations: repos harvest columns, and the
+    pairs.origin provenance column (existing rows backfilled to 'harvest').
+    Safe to run concurrently from the harvester and the generator."""
     conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_repos_url ON repos(url)")
-    cols = {r[1] for r in conn.execute("PRAGMA table_info(repos)")}
-    if "reason" not in cols:
-        conn.execute("ALTER TABLE repos ADD COLUMN reason TEXT")
-    if "stars" not in cols:
-        conn.execute("ALTER TABLE repos ADD COLUMN stars INTEGER")
+    _add_column_if_missing(conn, "repos", "reason", "TEXT")
+    _add_column_if_missing(conn, "repos", "stars", "INTEGER")
+    _add_column_if_missing(conn, "pairs", "origin", "TEXT")
+    conn.execute("UPDATE pairs SET origin='harvest' WHERE origin IS NULL")
     conn.commit()
 
 

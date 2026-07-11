@@ -32,3 +32,4 @@ venv/
 
 # Collection activity log (runtime)
 dataset/*.jsonl
+generator/build/

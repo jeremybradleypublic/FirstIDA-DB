@@ -28,5 +28,38 @@
       "repo ledger",
       "empty table"
     ]
+  },
+  "d44260d5c3be133f": {
+    "gist": "The core dataset: 84,974 rows, each pairing a C source function with its disassembled assembly, plus metadata (repo, file_path, func_name, signature, lang, arch, opt_level, obj_format, compiler) and source/asm/pair content hashes. This is the training corpus of source-to-disassembly pairs.",
+    "keywords": [
+      "disassembly",
+      "source-asm-pairs",
+      "training-dataset",
+      "compiler",
+      "arch",
+      "opt-level",
+      "content-hash"
+    ]
+  },
+  "4fed327a71c403fa": {
+    "gist": "13,688 rows recording source files that failed to compile during dataset generation, keyed by repo/file_path/opt_level with a free-text reason holding the compiler error output (missing headers, invalid conversions, unsupported vector intrinsics, etc.). This is the failure/rejection log complementing the successful pairs.",
+    "keywords": [
+      "compile-failures",
+      "error-log",
+      "rejected-files",
+      "compiler-errors",
+      "reason"
+    ]
+  },
+  "507ce55ac3f25226": {
+    "gist": "116 rows describing the upstream GitHub repositories the dataset is built from: url, commit_sha, license, processing status (done/queued/failed), n_pairs produced, processed_at timestamp, failure reason, and stars. This is the provenance/catalog of source projects.",
+    "keywords": [
+      "provenance",
+      "github-repos",
+      "license",
+      "processing-status",
+      "n-pairs",
+      "stars"
+    ]
   }
 }

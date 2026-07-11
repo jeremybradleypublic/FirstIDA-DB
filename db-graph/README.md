@@ -174,3 +174,17 @@ flowchart LR
 > `.venv/**/*.pth` files, and Python 3.14's `site.py` silently skips hidden `.pth`
 > files — editable installs break within hours in iCloud-synced folders. A plain
 > install reinstalled by the hook is immune.
+
+## Provenance: the `origin` dimension
+
+`pairs.origin` is now a queryable dimension of the graph: `'harvest'` rows come
+from the GitHub harvester, `'gen:direct'` rows from compiler-in-the-loop
+synthetic templates, and `'gen:hybrid'` rows from the asmjit/zydis IR generator
+(`obj_format='rawx86_64'`, `compiler='asmjit'`). The graph is refreshed
+automatically after each generator run (`scripts/build_graph.sh
+--structural-only`), so per-origin slices show up in `DB_MAP.md` after a
+rebuild:
+
+```sql
+SELECT origin, COUNT(*) FROM pairs GROUP BY origin;
+```

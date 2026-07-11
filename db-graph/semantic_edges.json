@@ -16,5 +16,23 @@
     "target": "table:skipped",
     "relation": "planned provenance source for future skipped entries",
     "confidence": "AMBIGUOUS"
+  },
+  {
+    "source": "table:repos",
+    "target": "table:pairs",
+    "relation": "source repo of pairs (repos.n_pairs counts them)",
+    "confidence": "INFERRED"
+  },
+  {
+    "source": "table:repos",
+    "target": "table:skipped",
+    "relation": "repo whose files were skipped",
+    "confidence": "INFERRED"
+  },
+  {
+    "source": "table:skipped",
+    "target": "table:pairs",
+    "relation": "failed-compile counterpart of successful pairs (same repo/file_path/opt_level space)",
+    "confidence": "INFERRED"
   }
 ]

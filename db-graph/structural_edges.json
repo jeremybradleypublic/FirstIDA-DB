@@ -16,5 +16,11 @@
     "target": "table:skipped",
     "relation": "shared_column:repo",
     "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:repos",
+    "target": "table:skipped",
+    "relation": "shared_column:reason",
+    "confidence": "EXTRACTED"
   }
 ]

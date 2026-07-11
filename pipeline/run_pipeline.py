@@ -31,11 +31,13 @@ def include_dirs_for(repo_dir: str):
 
 def run(repo_dir, repo=None, db_path="dataset/pairs.db",
         compilers=("gcc", "clang"), opt_levels=("O0", "O1", "O2", "O3", "Os"),
-        progress=None, journal=None):
+        progress=None, journal=None, origin="harvest"):
     repo = repo or os.path.basename(os.path.abspath(repo_dir))
     os.makedirs(os.path.dirname(os.path.abspath(db_path)), exist_ok=True)
     conn = store.connect(db_path)
     store.init_schema(conn)
+    store.migrate(conn)   # self-sufficient: ensure the `origin` column exists
+                          # even when run standalone on a pre-migration DB
 
     sources = find_sources(repo_dir)
     incs = include_dirs_for(repo_dir)
@@ -78,7 +80,8 @@ def run(repo_dir, repo=None, db_path="dataset/pairs.db",
                                              func_name=p.func_name, signature=p.signature,
                                              lang=p.lang, arch="x86_64", opt_level=opt,
                                              obj_format="elf", compiler=label,
-                                             source_text=p.source_text, asm_text=p.asm_text):
+                                             source_text=p.source_text, asm_text=p.asm_text,
+                                             origin=origin):
                             stats["pairs"] += 1
     finally:
         tc.stop()
