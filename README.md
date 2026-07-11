@@ -67,6 +67,7 @@ graph, and refreshes the committed `db-graph/` folder.
 
 ```bash
 # one-time: install the dbgraph tool into the venv
+# (auto-reinstalled by the dbgraph repo's post-commit hook on every tool update)
 .venv/bin/pip install /path/to/dbgraph
 
 scripts/build_graph.sh                 # structural graph, reuses any cached gists
@@ -79,7 +80,10 @@ Outputs land in `dataset/dbgraph-out/` (gitignored working dir) and the curated 
 mirrored into **`db-graph/`** (`DB_MAP.md`, self-contained `dbgraph.html`, `graph.json`, …).
 `dbgraph build` also writes `_dbgraph_units` / `_dbgraph_edges` / `_dbgraph_themes` tables
 back into `pairs.db`. For the richest gists inside Claude Code, run the `/dbgraph` skill,
-then `scripts/build_graph.sh` to mirror the result. See `db-graph/README.md`.
+then `scripts/build_graph.sh` to mirror the result. `db-graph/` auto-updates: the dbgraph
+source repo's post-commit hook reinstalls the tool here, reruns the wrapper, and commits +
+pushes when the graph changes. Architecture diagrams and the full artifact reference:
+`db-graph/README.md`.
 
 ## Testing
 
