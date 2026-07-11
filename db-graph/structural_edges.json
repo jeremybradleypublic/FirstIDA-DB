@@ -1,5 +1,503 @@
 [
   {
+    "source": "facet:pairs.lang=c",
+    "target": "table:pairs",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.lang=cpp",
+    "target": "table:pairs",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.obj_format=elf",
+    "target": "table:pairs",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.obj_format=rawx86_64",
+    "target": "table:pairs",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.session=gen-20260711T211742Z",
+    "target": "table:pairs",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.session=scrape-20260711T212132Z",
+    "target": "table:pairs",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.compiler=asmjit",
+    "target": "table:pairs",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.compiler=clang-14.0.6",
+    "target": "table:pairs",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.compiler=gcc-12.2.0",
+    "target": "table:pairs",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.origin=gen:direct",
+    "target": "table:pairs",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.origin=gen:hybrid",
+    "target": "table:pairs",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.origin=harvest",
+    "target": "table:pairs",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.lang=c",
+    "target": "facet:pairs.obj_format=elf",
+    "relation": "co_occurs:87259",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.lang=cpp",
+    "target": "facet:pairs.obj_format=elf",
+    "relation": "co_occurs:7010",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.lang=c",
+    "target": "facet:pairs.compiler=gcc-12.2.0",
+    "relation": "co_occurs:45988",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.lang=c",
+    "target": "facet:pairs.compiler=clang-14.0.6",
+    "relation": "co_occurs:41271",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.lang=c",
+    "target": "facet:pairs.origin=harvest",
+    "relation": "co_occurs:86840",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.lang=cpp",
+    "target": "facet:pairs.origin=harvest",
+    "relation": "co_occurs:6815",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.obj_format=elf",
+    "target": "facet:pairs.compiler=gcc-12.2.0",
+    "relation": "co_occurs:49646",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.obj_format=elf",
+    "target": "facet:pairs.compiler=clang-14.0.6",
+    "relation": "co_occurs:44623",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.obj_format=elf",
+    "target": "facet:pairs.origin=harvest",
+    "relation": "co_occurs:93655",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.compiler=gcc-12.2.0",
+    "target": "facet:pairs.origin=harvest",
+    "relation": "co_occurs:49290",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs.compiler=clang-14.0.6",
+    "target": "facet:pairs.origin=harvest",
+    "relation": "co_occurs:44365",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:skipped.opt_level=O0",
+    "target": "table:skipped",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:skipped.opt_level=O1",
+    "target": "table:skipped",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:skipped.opt_level=O2",
+    "target": "table:skipped",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:skipped.opt_level=O3",
+    "target": "table:skipped",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:skipped.opt_level=Os",
+    "target": "table:skipped",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.reason=[Errno 2] No such file or directory: '/Users/jbradley/.cache/disasm_harvest/dsprenkels__sss/randombytes.c'",
+    "target": "table:repos",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.reason=too many files (1604)",
+    "target": "table:repos",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.reason=too many files (749)",
+    "target": "table:repos",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.status=done",
+    "target": "table:repos",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.status=failed",
+    "target": "table:repos",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.status=queued",
+    "target": "table:repos",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.license=apache-2.0",
+    "target": "table:repos",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.license=bsd-2-clause",
+    "target": "table:repos",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.license=bsd-3-clause",
+    "target": "table:repos",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.license=isc",
+    "target": "table:repos",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.license=mit",
+    "target": "table:repos",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.license=unlicense",
+    "target": "table:repos",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.license=zlib",
+    "target": "table:repos",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.status=queued",
+    "target": "facet:repos.license=mit",
+    "relation": "co_occurs:33",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.status=done",
+    "target": "facet:repos.license=mit",
+    "relation": "co_occurs:27",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.status=done",
+    "target": "facet:repos.license=apache-2.0",
+    "relation": "co_occurs:19",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:repos.status=queued",
+    "target": "facet:repos.license=apache-2.0",
+    "relation": "co_occurs:11",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.lang=c",
+    "target": "table:pairs_labeled",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.lang=cpp",
+    "target": "table:pairs_labeled",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.obj_format=elf",
+    "target": "table:pairs_labeled",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.obj_format=rawx86_64",
+    "target": "table:pairs_labeled",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.session=gen-20260711T211742Z",
+    "target": "table:pairs_labeled",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.session=scrape-20260711T212132Z",
+    "target": "table:pairs_labeled",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.source_system=generator",
+    "target": "table:pairs_labeled",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.source_system=git-scraper",
+    "target": "table:pairs_labeled",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.compiler=asmjit",
+    "target": "table:pairs_labeled",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.compiler=clang-14.0.6",
+    "target": "table:pairs_labeled",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.compiler=gcc-12.2.0",
+    "target": "table:pairs_labeled",
+    "relation": "has_value",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.lang=c",
+    "target": "facet:pairs_labeled.obj_format=elf",
+    "relation": "co_occurs:87259",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.lang=cpp",
+    "target": "facet:pairs_labeled.obj_format=elf",
+    "relation": "co_occurs:7010",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.lang=c",
+    "target": "facet:pairs_labeled.source_system=git-scraper",
+    "relation": "co_occurs:86840",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.lang=cpp",
+    "target": "facet:pairs_labeled.source_system=git-scraper",
+    "relation": "co_occurs:6815",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.lang=c",
+    "target": "facet:pairs_labeled.compiler=gcc-12.2.0",
+    "relation": "co_occurs:45988",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.lang=c",
+    "target": "facet:pairs_labeled.compiler=clang-14.0.6",
+    "relation": "co_occurs:41271",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.obj_format=elf",
+    "target": "facet:pairs_labeled.source_system=git-scraper",
+    "relation": "co_occurs:93655",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.obj_format=elf",
+    "target": "facet:pairs_labeled.compiler=gcc-12.2.0",
+    "relation": "co_occurs:49646",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.obj_format=elf",
+    "target": "facet:pairs_labeled.compiler=clang-14.0.6",
+    "relation": "co_occurs:44623",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.source_system=git-scraper",
+    "target": "facet:pairs_labeled.compiler=gcc-12.2.0",
+    "relation": "co_occurs:49290",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "facet:pairs_labeled.source_system=git-scraper",
+    "target": "facet:pairs_labeled.compiler=clang-14.0.6",
+    "relation": "co_occurs:44365",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:pairs_labeled",
+    "relation": "shared_column:arch",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:pairs_labeled",
+    "relation": "shared_column:asm_hash",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:pairs_labeled",
+    "relation": "shared_column:asm_text",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:pairs_labeled",
+    "relation": "shared_column:compiler",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:pairs_labeled",
+    "relation": "shared_column:file_path",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:pairs_labeled",
+    "relation": "shared_column:func_name",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:pairs_labeled",
+    "relation": "shared_column:lang",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:pairs_labeled",
+    "relation": "shared_column:obj_format",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:pairs_labeled",
+    "relation": "shared_column:opt_level",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:pairs_labeled",
+    "relation": "shared_column:origin",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:pairs_labeled",
+    "relation": "shared_column:pair_hash",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:pairs_labeled",
+    "relation": "shared_column:repo",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:pairs_labeled",
+    "relation": "shared_column:session",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:pairs_labeled",
+    "relation": "shared_column:signature",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:pairs_labeled",
+    "relation": "shared_column:source_hash",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs",
+    "target": "table:pairs_labeled",
+    "relation": "shared_column:source_text",
+    "confidence": "EXTRACTED"
+  },
+  {
     "source": "table:pairs",
     "target": "table:skipped",
     "relation": "shared_column:file_path",
@@ -13,6 +511,24 @@
   },
   {
     "source": "table:pairs",
+    "target": "table:skipped",
+    "relation": "shared_column:repo",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs_labeled",
+    "target": "table:skipped",
+    "relation": "shared_column:file_path",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs_labeled",
+    "target": "table:skipped",
+    "relation": "shared_column:opt_level",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:pairs_labeled",
     "target": "table:skipped",
     "relation": "shared_column:repo",
     "confidence": "EXTRACTED"
