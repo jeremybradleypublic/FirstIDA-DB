@@ -74,18 +74,30 @@ def count_pairs(conn) -> int:
 
 # --- repos ledger (Phase-2 harvest) ---------------------------------------
 
+def _add_column_if_missing(conn, table, col, decl) -> None:
+    """Add a column, tolerating a concurrent migrator that added it first.
+    The table_info check avoids the ALTER in the common case; the try/except
+    covers the cross-process race where two processes both see it missing and
+    both ALTER — busy_timeout only retries on locks, not on the logical
+    'duplicate column name' error the loser would otherwise raise uncaught."""
+    cols = {r[1] for r in conn.execute(f"PRAGMA table_info({table})")}
+    if col in cols:
+        return
+    try:
+        conn.execute(f"ALTER TABLE {table} ADD COLUMN {col} {decl}")
+    except sqlite3.OperationalError as e:
+        if "duplicate column name" not in str(e).lower():
+            raise
+
+
 def migrate(conn) -> None:
     """Idempotent PRAGMA-guarded migrations: repos harvest columns, and the
-    pairs.origin provenance column (existing rows backfilled to 'harvest')."""
+    pairs.origin provenance column (existing rows backfilled to 'harvest').
+    Safe to run concurrently from the harvester and the generator."""
     conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_repos_url ON repos(url)")
-    cols = {r[1] for r in conn.execute("PRAGMA table_info(repos)")}
-    if "reason" not in cols:
-        conn.execute("ALTER TABLE repos ADD COLUMN reason TEXT")
-    if "stars" not in cols:
-        conn.execute("ALTER TABLE repos ADD COLUMN stars INTEGER")
-    pair_cols = {r[1] for r in conn.execute("PRAGMA table_info(pairs)")}
-    if "origin" not in pair_cols:
-        conn.execute("ALTER TABLE pairs ADD COLUMN origin TEXT")
+    _add_column_if_missing(conn, "repos", "reason", "TEXT")
+    _add_column_if_missing(conn, "repos", "stars", "INTEGER")
+    _add_column_if_missing(conn, "pairs", "origin", "TEXT")
     conn.execute("UPDATE pairs SET origin='harvest' WHERE origin IS NULL")
     conn.commit()
 

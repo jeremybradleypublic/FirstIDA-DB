@@ -16,6 +16,7 @@ Frozen JSONL record schema (the contract with generator/):
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -36,6 +37,9 @@ GRAPH_SH = os.path.join(ROOT, "scripts", "build_graph.sh")
 
 REQUIRED_COMMON = ("route", "func_name", "lang", "signature", "source_text", "seed")
 REQUIRED_HYBRID = ("asm_text", "obj_format", "compiler", "opt_level")
+# func_name becomes a scratch filename in the direct route — keep it to a safe
+# identifier so a hostile/garbled record can never escape the scratch dir.
+_SAFE_NAME = re.compile(r"^[A-Za-z0-9_]+$")
 
 
 def parse_records(jsonl_text, journal=None):
@@ -65,6 +69,11 @@ def parse_records(jsonl_text, journal=None):
             if journal:
                 journal.event(f"invalid record line {i}: missing {missing} — skipped",
                               level="warn")
+            continue
+        if not _SAFE_NAME.match(str(rec["func_name"])):
+            if journal:
+                journal.event(f"invalid record line {i}: unsafe func_name "
+                              f"{rec['func_name']!r} — skipped", level="warn")
             continue
         records.append(rec)
     return records

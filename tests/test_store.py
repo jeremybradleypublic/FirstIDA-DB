@@ -65,6 +65,37 @@ CREATE TABLE repos (
 """
 
 
+def test_migrate_concurrent_legacy_no_crash(tmp_path):
+    # Two migrators racing on the same pre-origin DB (the harvester + generator
+    # upgrade path) must not crash: both see origin missing, both ALTER, and
+    # the loser must swallow 'duplicate column name' rather than raise.
+    db = str(tmp_path / "legacy.db")
+    raw = sqlite3.connect(db)
+    raw.executescript(_LEGACY_SCHEMA)
+    raw.commit()
+    raw.close()
+
+    errs = []
+    barrier = threading.Barrier(2)
+
+    def worker():
+        conn = store.connect(db)
+        try:
+            barrier.wait()          # maximise the race window
+            store.migrate(conn)
+        except Exception as e:      # noqa: BLE001 — record any raise
+            errs.append(e)
+        finally:
+            conn.close()
+
+    t1 = threading.Thread(target=worker)
+    t2 = threading.Thread(target=worker)
+    t1.start(); t2.start(); t1.join(); t2.join()
+    assert errs == [], errs
+    conn = store.connect(db)
+    assert "origin" in {r[1] for r in conn.execute("PRAGMA table_info(pairs)")}
+
+
 def test_migrate_adds_origin_and_backfills(tmp_path):
     # Build a pre-origin legacy DB by hand, with one existing harvested row.
     db = str(tmp_path / "legacy.db")

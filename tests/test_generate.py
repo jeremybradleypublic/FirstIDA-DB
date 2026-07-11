@@ -45,6 +45,19 @@ def test_parse_records_direct_does_not_require_asm():
     assert "asm_text" not in recs[0]
 
 
+def test_parse_records_rejects_unsafe_func_name():
+    # func_name becomes a scratch filename in the direct route; a path-bearing
+    # name must be rejected so it can never escape the scratch dir.
+    text = "\n".join([
+        json.dumps(_direct_rec("g_good_0")),
+        json.dumps(_direct_rec("../../etc/passwd")),
+        json.dumps(_direct_rec("has/slash")),
+        json.dumps(_hybrid_rec("h_ok_1")),
+    ])
+    recs = gen.parse_records(text)
+    assert [r["func_name"] for r in recs] == ["g_good_0", "h_ok_1"]
+
+
 def test_schema_constants_match_frozen_contract():
     assert gen.REQUIRED_COMMON == ("route", "func_name", "lang", "signature",
                                    "source_text", "seed")
