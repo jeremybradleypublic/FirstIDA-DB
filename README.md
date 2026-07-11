@@ -141,15 +141,17 @@ The gallery is written to `dataset/gallery.html` (gitignored; rebuild anytime).
 
 ### Running both sources at once
 
-`scripts/run_all.sh` runs the git scraper and the generator **in parallel in one
-terminal**, both writing the same `dataset/pairs.db` (safe — WAL + `busy_timeout`).
-Each stream's output is prefixed (`[scraper]` / `[generator]`); when both finish
-it prints the source split and opens the gallery.
+`scripts/run_all.sh` runs the git scraper and the generator **in parallel**, both
+writing the same `dataset/pairs.db` (safe — WAL + `busy_timeout`). By default they
+share **one unified live dashboard** split down the middle — `[git scraper]` on the
+left, `[generator]` on the right, each with its own progress, totals, and live
+activity box. When both finish it prints the source split and opens the gallery.
 
 ```bash
-scripts/run_all.sh                       # 10 repos + 200 generated funcs
+scripts/run_all.sh                       # unified split dashboard, new window
 scripts/run_all.sh --repos 30 --gen 500 --route hybrid
-scripts/run_all.sh --here                # in this terminal instead of a new window
+scripts/run_all.sh --here                # unified dashboard in this terminal
+scripts/run_all.sh --plain --here        # interleaved [scraper]/[generator] log lines instead
 ```
 
 ### Telling the two data sources apart

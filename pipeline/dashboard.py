@@ -223,6 +223,144 @@ def _render(state: DashState, width: int, height: int):
                  height=height)
 
 
+def _side_panel(state: DashState, title, accent, width, height):
+    """Render one source's live state (scraper or generator) as a bordered
+    panel — used by the split dashboard. Adjacent panels' borders form the
+    dividing line down the middle of the terminal."""
+    from rich.panel import Panel
+    from rich.rule import Rule
+    from rich.table import Table
+    from rich.text import Text
+    from rich import box
+
+    width = max(20, width)
+    height = max(8, height)
+    inner = width - 4
+
+    cur = Table.grid(expand=True)
+    cur.add_column(justify="left", no_wrap=True, overflow="ellipsis")
+    icon = {"cloning": "⬇", "compiling": "⚙", "discovering": "🔎",
+            "generating": "✳"}.get(state.stage, "•")
+    cur.add_row(Text.assemble(("▶ ", "bold " + accent), (state.repo or "—", "bold"),
+                              ("  ", ""), (f"{icon} {state.stage}", accent),
+                              no_wrap=True, overflow="ellipsis"))
+    if state.cur_n:
+        pct = int(100 * state.cur_i / state.cur_n)
+        counts_s = f"{state.cur_i}/{state.cur_n} "
+        bar_w = max(6, min(inner // 2, inner - len(counts_s) - 16))
+        room = max(6, inner - bar_w - 8 - len(counts_s))
+        f = state.cur_file
+        if len(f) > room:
+            f = "…" + f[-(room - 1):]
+        cur.add_row(Text.assemble((_bar(state.cur_i, state.cur_n, bar_w), accent),
+                                  (f"  {pct:3d}% ", "bold"), (counts_s, "dim"),
+                                  (f, "dim"), no_wrap=True, overflow="ellipsis"))
+
+    _rpm, ppm = _rates(state)
+    tot = Table.grid(expand=True)
+    tot.add_column(justify="left", no_wrap=True, overflow="ellipsis")
+    tot.add_row(Text.assemble(("pairs ", "dim"), (f"{state.pairs_total:,}", "bold green"),
+                              (f" (+{state.repo_pairs})  ", "dim"),
+                              ("skips ", "dim"), (f"{state.skips_total:,}  ", "red"),
+                              (f"{ppm:.0f}/min", "dim"),
+                              no_wrap=True, overflow="ellipsis"))
+
+    body = Table.grid(expand=True)
+    body.add_column()
+    body.add_row(cur)
+    body.add_row(tot)
+    c = state.counts
+    if any(c.values()):   # ledger line only where it means something (scraper)
+        body.add_row(Text.assemble(
+            ("queued ", "dim"), (f"{c['queued']} ", "cyan"),
+            ("running ", "dim"), (f"{c['running']} ", "yellow"),
+            ("done ", "dim"), (f"{c['done']} ", "green"),
+            ("failed ", "dim"), (f"{c['failed']}", "red"),
+            no_wrap=True, overflow="ellipsis"))
+    body.add_row(Rule(style="dim"))
+
+    fixed = (2 if state.cur_n else 1) + 1 + (1 if any(c.values()) else 0) + 1
+    avail = max(3, height - 2 - fixed)
+    body.add_row(_cmd_panel(state, max(1, avail - 2)))
+
+    done = " ✓" if state.done else ""
+    return Panel(body, title=f"[bold {accent}]{title}{done}[/]",
+                 subtitle=f"[dim]{_elapsed(state)}[/]", border_style=accent,
+                 box=box.ROUNDED, height=height, width=width)
+
+
+def run_split_dashboard(specs, refresh_per_second=4):
+    """Run several work(emit) jobs concurrently and render them side by side in
+    ONE live view, each in its own bordered panel (the borders split the screen).
+    `specs` is a list of (title, accent_color, work). Returns the list of results."""
+    from rich.live import Live
+    from rich.console import Console
+    from rich.table import Table
+
+    n = len(specs)
+    states = [DashState() for _ in specs]
+    locks = [threading.Lock() for _ in specs]
+    results = [None] * n
+
+    def make_emit(i):
+        def emit(e):
+            with locks[i]:
+                apply(states[i], e)
+        return emit
+
+    def _grid(w, h):
+        colw = max(20, w // n)
+        grid = Table.grid(expand=True)
+        for _ in specs:
+            grid.add_column()
+        cells = []
+        for i, (title, accent, _work) in enumerate(specs):
+            with locks[i]:
+                cells.append(_side_panel(states[i], title, accent, colw, h))
+        grid.add_row(*cells)
+        return grid
+
+    console = Console()
+
+    class _R:
+        def __rich_console__(self, console, options):
+            yield _grid(options.max_width, options.height or console.size.height)
+
+    def runner(i, work):
+        try:
+            results[i] = work(make_emit(i))
+        except Exception as e:   # a crash in one side must not kill the view
+            make_emit(i)({"type": "log", "level": "error", "msg": str(e)[:80]})
+
+    use_screen = console.is_terminal
+    threads = [threading.Thread(target=runner, args=(i, specs[i][2]), daemon=True)
+               for i in range(n)]
+    with Live(_R(), console=console, refresh_per_second=refresh_per_second,
+              screen=use_screen, vertical_overflow="crop"):
+        for t in threads:
+            t.start()
+        try:
+            for t in threads:
+                t.join()
+        except KeyboardInterrupt:
+            try:
+                import pipeline.harvest as _h
+                _h._stop["soft"] = True   # ask the scraper to finish its repo
+            except Exception:
+                pass
+            for t in threads:
+                t.join(timeout=30)
+        for st in states:
+            st.done = True
+        time.sleep(0.4)
+    if use_screen:
+        console.print(_grid(console.size.width, min(console.size.height, 26)))
+    for (title, _a, _w), st in zip(specs, states):
+        console.print(f"[green]done[/] {title}: {st.pairs_total:,} pairs · "
+                      f"{st.skips_total:,} skips")
+    return results
+
+
 def run_with_dashboard(work, limit=None):
     """Run work(emit) with a live rich view. Returns work's result."""
     from rich.live import Live
