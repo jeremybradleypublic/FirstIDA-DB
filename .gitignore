@@ -29,3 +29,6 @@ venv/
 
 # OS
 .DS_Store
+
+# Collection activity log (runtime)
+dataset/*.jsonl
