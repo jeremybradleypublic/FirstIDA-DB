@@ -59,6 +59,28 @@ sqlite3 dataset/pairs.db \
   "SELECT func_name,opt_level,compiler FROM pairs WHERE repo='zlib' LIMIT 10;"
 ```
 
+## Knowledge graph (dbgraph)
+
+Once the database is populated, turn it into a navigable knowledge graph with the
+integrated wrapper. It scans the DB, (optionally) enriches per-table gists, builds the
+graph, and refreshes the committed `db-graph/` folder.
+
+```bash
+# one-time: install the dbgraph tool into the venv
+.venv/bin/pip install /path/to/dbgraph
+
+scripts/build_graph.sh                 # structural graph, reuses any cached gists
+scripts/build_graph.sh --enrich        # add per-table gists via a headless `claude` run
+scripts/build_graph.sh --serve         # build, then open the interactive graph locally
+scripts/build_graph.sh --structural-only   # fastest; no LLM step
+```
+
+Outputs land in `dataset/dbgraph-out/` (gitignored working dir) and the curated copies are
+mirrored into **`db-graph/`** (`DB_MAP.md`, self-contained `dbgraph.html`, `graph.json`, …).
+`dbgraph build` also writes `_dbgraph_units` / `_dbgraph_edges` / `_dbgraph_themes` tables
+back into `pairs.db`. For the richest gists inside Claude Code, run the `/dbgraph` skill,
+then `scripts/build_graph.sh` to mirror the result. See `db-graph/README.md`.
+
 ## Testing
 
 ```bash
