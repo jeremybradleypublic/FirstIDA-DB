@@ -18,49 +18,70 @@ def _seed(db):
     conn = store.connect(db)
     store.init_schema(conn)
     store.migrate(conn)
-    _ins(conn, func_name="h_a", origin="gen:hybrid")
+    _ins(conn, func_name="h_a", origin="gen:hybrid", session="gen-S1")
     _ins(conn, func_name="d_x", origin="gen:direct", obj_format="elf",
-         compiler="gcc-12.2.0", opt_level="O0")
+         compiler="gcc-12.2.0", opt_level="O0", asm_text="<d_x>:\n ret", session="gen-S1")
     _ins(conn, func_name="harv_fn", origin="harvest", obj_format="elf",
-         compiler="gcc-12.2.0", opt_level="O2")   # must be excluded by default
+         compiler="gcc-12.2.0", opt_level="O2", asm_text="<harv_fn>:\n ret")
     conn.commit()
     conn.close()
 
 
-def test_gallery_generated_only_by_default(tmp_path):
+def test_gallery_includes_both_sources(tmp_path):
     db = str(tmp_path / "g.db")
     _seed(db)
     text = open(gallery.build_gallery(db, str(tmp_path / "g.html")),
                 encoding="utf-8").read()
-    assert "h_a" in text and "d_x" in text
-    assert "harv_fn" not in text          # harvested rows excluded from gen:%
-    assert "asmjit" in text and "gcc-12.2.0" in text
-    assert 'data-f="direct"' in text and 'data-f="hybrid"' in text  # filter chips
+    # the git scraper is now connected to the page too
+    assert "h_a" in text and "d_x" in text and "harv_fn" in text
+    assert "git-scraper" in text and "generator" in text
+    assert "FirstIDA-DB console" in text          # the advanced console shell
+    assert 'id=p-journal' in text and 'id=p-sources' in text and 'id=p-graph' in text
 
 
-def test_gallery_escapes_html(tmp_path):
+def test_gallery_embeds_sessions_and_sources(tmp_path):
+    db = str(tmp_path / "g.db")
+    _seed(db)
+    conn = store.connect(db)
+    store.migrate(conn)
+    store.ensure_repo_queued(conn, "https://github.com/a/b", "mit", 42)
+    rid = conn.execute("SELECT id FROM repos WHERE url LIKE '%a/b'").fetchone()[0]
+    store.mark_repo(conn, rid, "done", n_pairs=17, commit_sha="abc")
+    conn.commit()
+    conn.close()
+    text = open(gallery.build_gallery(db, str(tmp_path / "g.html")),
+                encoding="utf-8").read()
+    assert "gen-S1" in text                        # session id embedded
+    assert "https://github.com/a/b" in text        # scraper's repo list embedded
+
+
+def test_gallery_hybrid_gets_symbol_header(tmp_path):
     db = str(tmp_path / "g.db")
     conn = store.connect(db)
     store.init_schema(conn)
     store.migrate(conn)
-    _ins(conn, func_name="cmp_lt", origin="gen:direct",
-         source_text="int cmp_lt(int a, int b){return a < b && a > 0;}",
-         asm_text="0: cmp edi, esi  <tag>")
+    # a legacy hybrid row whose asm has no <symbol>: header
+    _ins(conn, func_name="h_acc_i_1", origin="gen:hybrid", asm_text="0: mov eax, 1")
     conn.commit()
     conn.close()
-    text = open(gallery.build_gallery(db, str(tmp_path / "x.html")),
+    text = open(gallery.build_gallery(db, str(tmp_path / "g.html")),
                 encoding="utf-8").read()
-    assert "a &lt; b &amp;&amp; a &gt; 0" in text   # escaped source
-    assert "&lt;tag&gt;" in text                    # escaped asm
-    assert "a < b &&" not in text                   # never raw
+    assert "<h_acc_i_1>:" in text                  # header synthesized for display
 
 
-def test_gallery_all_includes_harvest(tmp_path):
+def test_gallery_neutralises_script_break(tmp_path):
     db = str(tmp_path / "g.db")
-    _seed(db)
-    text = open(gallery.build_gallery(db, str(tmp_path / "all.html"),
-                                      origin_like="%"), encoding="utf-8").read()
-    assert "harv_fn" in text
+    conn = store.connect(db)
+    store.init_schema(conn)
+    store.migrate(conn)
+    _ins(conn, func_name="evil", origin="gen:hybrid",
+         source_text="x</script>y", asm_text="0: ret")
+    conn.commit()
+    conn.close()
+    text = open(gallery.build_gallery(db, str(tmp_path / "g.html")),
+                encoding="utf-8").read()
+    assert "x</script>y" not in text               # not left raw in the <script>
+    assert "x<\\/script>y" in text                 # neutralised to <\/script>
 
 
 def test_gallery_empty_db_is_valid(tmp_path):
@@ -71,11 +92,18 @@ def test_gallery_empty_db_is_valid(tmp_path):
     conn.close()
     text = open(gallery.build_gallery(db, str(tmp_path / "e.html")),
                 encoding="utf-8").read()
-    assert "No generated pairs yet" in text
+    assert "FirstIDA-DB console" in text
+    assert '"pairs": []' in text or '"pairs":[]' in text
+
+
+def test_asm_with_header_helper():
+    assert gen._asm_with_header({"func_name": "h0", "asm_text": "0: ret"}) == "<h0>:\n0: ret"
+    # already-headered asm is left alone
+    assert gen._asm_with_header({"func_name": "h0", "asm_text": "<h0>:\n0: ret"}) \
+        == "<h0>:\n0: ret"
 
 
 def test_ingest_hybrid_streams_each_function(tmp_path):
-    # live visibility: each generated function is written to the journal
     db = str(tmp_path / "g.db")
     conn = store.connect(db)
     store.init_schema(conn)
@@ -87,7 +115,7 @@ def test_ingest_hybrid_streams_each_function(tmp_path):
              "source_text": "int h_stream_0(int a, int b){return a;}", "seed": 1,
              "asm_text": "0: ret", "obj_format": "rawx86_64",
              "compiler": "asmjit", "opt_level": "none"}]
-    gen.ingest_hybrid(conn, recs, journal=j)
+    gen.ingest_hybrid(conn, recs, journal=j, session="gen-T")
     j.close()
     conn.close()
     assert "h_stream_0" in open(jp, encoding="utf-8").read()

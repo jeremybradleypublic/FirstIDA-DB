@@ -20,6 +20,7 @@ import re
 import shutil
 import subprocess
 import sys
+from datetime import datetime, timezone
 
 import pipeline.store as store
 import pipeline.run_pipeline as run_pipeline
@@ -80,7 +81,16 @@ def parse_records(jsonl_text, journal=None):
     return records
 
 
-def ingest_hybrid(conn, records, journal=None):
+def _asm_with_header(rec):
+    """Prepend a `<symbol>:` header to the zydis asm so hybrid pairs read like
+    the objdump-derived direct/scraper asm (e.g. `<h_acc_i_1>:`)."""
+    asm = rec["asm_text"]
+    if asm.lstrip().startswith("<"):
+        return asm
+    return f"<{rec['func_name']}>:\n{asm}"
+
+
+def ingest_hybrid(conn, records, journal=None, session=None):
     """Insert full hybrid pairs as-is (no compile step). Dedup collisions are
     counted, not errors (existing INSERT OR IGNORE via pair_hash)."""
     stats = {"pairs": 0, "dedup": 0}
@@ -91,8 +101,8 @@ def ingest_hybrid(conn, records, journal=None):
             func_name=rec["func_name"], signature=rec["signature"],
             lang=rec["lang"], arch="x86_64", opt_level="none",
             obj_format="rawx86_64", compiler="asmjit",
-            source_text=rec["source_text"], asm_text=rec["asm_text"],
-            origin="gen:hybrid")
+            source_text=rec["source_text"], asm_text=_asm_with_header(rec),
+            origin="gen:hybrid", session=session)
         stats["pairs" if ok else "dedup"] += 1
         if journal:   # stream each created function so it appears live
             journal.event(f"{'new' if ok else 'dup'} {rec['func_name']}  "
@@ -119,7 +129,7 @@ def write_direct_repo(records, scratch_root=SCRATCH_ROOT):
     return dest
 
 
-def ingest_direct(records, db_path, emit=lambda e: None, journal=None):
+def ingest_direct(records, db_path, emit=lambda e: None, journal=None, session=None):
     """Compile synthesized sources through the EXISTING pipeline path
     (env -> compile -> disasm -> pair). tree-sitter re-extracts the function
     names from the written TUs, so pairing round-trips. Rows land with
@@ -135,7 +145,7 @@ def ingest_direct(records, db_path, emit=lambda e: None, journal=None):
         return run_pipeline.run(
             dest, repo="gen:direct", db_path=db_path,
             progress=lambda e: emit({**e, "repo": "gen:direct"}),
-            journal=journal, origin="gen:direct")
+            journal=journal, origin="gen:direct", session=session)
     finally:
         shutil.rmtree(dest, ignore_errors=True)
 
@@ -170,23 +180,26 @@ def generate(count=100, route="both", db_path="dataset/pairs.db", seed=0,
     store.init_schema(conn)
     store.migrate(conn)
     journal = Journal(path=JOURNAL_PATH, emit=emit)
+    session = "gen-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     totals = {"pairs": 0, "skipped": 0, "dedup": 0}
     try:
-        journal.event(f"generate start (route={route}, count={count}, seed={seed})")
+        journal.event(f"generate start (session={session}, route={route}, "
+                      f"count={count}, seed={seed})")
         routes = ("direct", "hybrid") if route == "both" else (route,)
         for i, r in enumerate(routes):
             emit({"type": "stage", "repo": f"gen:{r}", "stage": "generating"})
             records = run_generator(r, count, seed, journal)
             journal.event(f"{r}: {len(records)} record(s) from generator")
             if r == "hybrid":
-                st = ingest_hybrid(conn, records, journal=journal)
+                st = ingest_hybrid(conn, records, journal=journal, session=session)
                 totals["pairs"] += st["pairs"]
                 totals["dedup"] += st["dedup"]
                 emit({"type": "repo_done", "repo": "gen:hybrid", "status": "done",
                       "pairs": st["pairs"], "skipped": st["dedup"]})
             else:
                 emit({"type": "stage", "repo": "gen:direct", "stage": "compiling"})
-                st = ingest_direct(records, db_path, emit=emit, journal=journal)
+                st = ingest_direct(records, db_path, emit=emit, journal=journal,
+                                   session=session)
                 totals["pairs"] += st["pairs"]
                 totals["skipped"] += st["skipped"]
                 emit({"type": "repo_done", "repo": "gen:direct", "status": "done",

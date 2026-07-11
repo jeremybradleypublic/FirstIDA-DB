@@ -128,16 +128,25 @@ Harvested rows are backfilled with `origin='harvest'` by `store.migrate()`.
 
 Each synthesized function streams into the run's journal/dashboard as it is
 created (name + signature), so you watch them appear live. After a run,
-`generate.py` also writes a self-contained **HTML gallery** of the generated
-`(source, asm)` pairs, laid out side by side:
+`generate.py` also builds an interactive, self-contained **HTML console**
+(`dataset/gallery.html`) covering BOTH data sources, with four tabs:
+
+- **Pairs** — every `(source, asm)` pair from the scraper *and* the generator,
+  filterable by source system, route, **session**, language, and full-text
+  search. Hybrid asm carries a `<symbol>:` header so it reads like the
+  objdump-derived scraper/direct asm.
+- **Journal** — the live activity logs of both the scraper and the generator.
+- **Sources** — the git repos the scraper used (sortable; stars/license/pairs).
+- **Graph** — the dbgraph knowledge graph, embedded.
 
 ```bash
-scripts/gallery.sh                      # build + open newest 300 generated pairs
-scripts/gallery.sh --route hybrid       # just one route
-python -m pipeline.gallery --all        # include harvested rows too
+scripts/gallery.sh                      # build + open the console
+python -m pipeline.gallery --route hybrid --limit 200
 ```
 
-The gallery is written to `dataset/gallery.html` (gitignored; rebuild anytime).
+Each generator/scraper run tags its rows with a `session` id, so the console
+lets you browse different runs. The console is written to `dataset/gallery.html`
+(gitignored; rebuild anytime).
 
 ### Running both sources at once
 

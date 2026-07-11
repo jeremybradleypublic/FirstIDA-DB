@@ -7,6 +7,7 @@ import shutil
 import signal
 import subprocess
 import sys
+from datetime import datetime, timezone
 
 import pipeline.store as store
 import pipeline.scrape as scrape
@@ -74,7 +75,7 @@ def _repo_name(url):
     return "/".join(url.rstrip("/").split("/")[-2:])
 
 
-def process_one(conn, row, db_path, emit, journal=None, max_files=None):
+def process_one(conn, row, db_path, emit, journal=None, max_files=None, session=None):
     repo_id, url = row["id"], row["url"]
     name = _repo_name(url)
     dest = os.path.join(SCRATCH_ROOT, name.replace("/", "__"))
@@ -123,7 +124,7 @@ def process_one(conn, row, db_path, emit, journal=None, max_files=None):
         jevent(f"compiling {name} ({size_mb:.0f}MB @ {sha[:10] if sha else '?'})")
         stats = run_pipeline.run(dest, repo=name, db_path=db_path,
                                  progress=lambda e: emit({**e, "repo": name}),
-                                 journal=journal)
+                                 journal=journal, session=session)
         store.mark_repo(conn, repo_id, "done", n_pairs=stats["pairs"], commit_sha=sha)
         jevent(f"done {name}: {stats['pairs']} pairs ({stats['skipped']} skipped)")
         emit({"type": "repo_done", "repo": name, "status": "done",
@@ -150,8 +151,9 @@ def harvest(db_path="dataset/pairs.db", limit=None, emit=lambda e: None,
     store.init_schema(conn)
     store.migrate(conn)
     journal = Journal(emit=emit)
+    session = "scrape-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     try:
-        journal.event(f"harvest start (limit={limit}, target={target})")
+        journal.event(f"harvest start (session={session}, limit={limit}, target={target})")
         reset = store.reset_running_to_queued(conn)
         if reset:
             emit({"type": "log", "level": "info", "msg": f"recovered {reset} interrupted repo(s)"})
@@ -174,7 +176,8 @@ def harvest(db_path="dataset/pairs.db", limit=None, emit=lambda e: None,
                 if row is None:
                     journal.event("queue empty")
                     break
-                process_one(conn, row, db_path, emit, journal=journal, max_files=max_files)
+                process_one(conn, row, db_path, emit, journal=journal,
+                            max_files=max_files, session=session)
                 processed += 1
                 emit({"type": "progress", "processed": processed, **store.ledger_counts(conn)})
         except KeyboardInterrupt:

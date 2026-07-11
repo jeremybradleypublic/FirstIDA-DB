@@ -109,9 +109,9 @@ def test_ingest_direct_threads_origin_and_cleans_up(tmp_path, monkeypatch):
     def fake_run(repo_dir, repo=None, db_path="dataset/pairs.db",
                  compilers=("gcc", "clang"),
                  opt_levels=("O0", "O1", "O2", "O3", "Os"),
-                 progress=None, journal=None, origin="harvest"):
+                 progress=None, journal=None, origin="harvest", session=None):
         calls.update(repo_dir=repo_dir, repo=repo, db_path=db_path,
-                     origin=origin, existed=os.path.isdir(repo_dir))
+                     origin=origin, session=session, existed=os.path.isdir(repo_dir))
         if progress:
             progress({"type": "file", "file": "d0.c", "i": 1, "n": 1})
         return {"pairs": 3, "skipped": 1, "files": 1}
@@ -187,7 +187,7 @@ def test_generate_orchestrates_both_routes(tmp_path, monkeypatch):
         [_hybrid_rec()] if route == "hybrid" else [_direct_rec()])
     monkeypatch.setattr(
         gen, "ingest_direct",
-        lambda records, db_path, emit=None, journal=None:
+        lambda records, db_path, emit=None, journal=None, session=None:
         {"pairs": 2, "skipped": 1, "files": 1})
     events = []
     db = str(tmp_path / "g.db")

@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS pairs (
     source_text TEXT, asm_text TEXT,
     source_hash TEXT, asm_hash TEXT,
     pair_hash   TEXT UNIQUE,
-    origin      TEXT
+    origin      TEXT,
+    session     TEXT
 );
 CREATE TABLE IF NOT EXISTS skipped (
     id INTEGER PRIMARY KEY, repo TEXT, file_path TEXT, opt_level TEXT, reason TEXT
@@ -44,17 +45,17 @@ def init_schema(conn: sqlite3.Connection) -> None:
 
 def insert_pair(conn, *, repo, file_path, func_name, signature, lang, arch,
                 opt_level, obj_format, compiler, source_text, asm_text,
-                origin='harvest') -> bool:
+                origin='harvest', session=None) -> bool:
     source_hash = _sha1(source_text)
     asm_hash = _sha1(asm_text)
     pair_hash = _sha1(f"{func_name}\n{asm_text}\n{source_text}")
     cur = conn.execute(
         """INSERT OR IGNORE INTO pairs
            (repo,file_path,func_name,signature,lang,arch,opt_level,obj_format,
-            compiler,source_text,asm_text,source_hash,asm_hash,pair_hash,origin)
-           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+            compiler,source_text,asm_text,source_hash,asm_hash,pair_hash,origin,session)
+           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
         (repo, file_path, func_name, signature, lang, arch, opt_level, obj_format,
-         compiler, source_text, asm_text, source_hash, asm_hash, pair_hash, origin),
+         compiler, source_text, asm_text, source_hash, asm_hash, pair_hash, origin, session),
     )
     conn.commit()
     return cur.rowcount == 1
@@ -98,6 +99,7 @@ def migrate(conn) -> None:
     _add_column_if_missing(conn, "repos", "reason", "TEXT")
     _add_column_if_missing(conn, "repos", "stars", "INTEGER")
     _add_column_if_missing(conn, "pairs", "origin", "TEXT")
+    _add_column_if_missing(conn, "pairs", "session", "TEXT")
     conn.execute("UPDATE pairs SET origin='harvest' WHERE origin IS NULL")
     # Self-documenting view: anyone opening pairs.db sees a coarse source_system
     # column that names WHERE each pair came from — the git scraper vs. the
