@@ -11,6 +11,7 @@ import sys
 import pipeline.store as store
 import pipeline.scrape as scrape
 import pipeline.run_pipeline as run_pipeline
+from pipeline.journal import Journal
 
 # MUST be under $HOME — Colima only virtiofs-mounts the home dir, so a checkout
 # anywhere else mounts as an empty /src inside the toolchain container.
@@ -33,8 +34,15 @@ def _install_signals():
     signal.signal(signal.SIGINT, handler)
 
 
-def _clone(url, dest):
+def _clone(url, dest, journal=None):
     env = dict(os.environ, GIT_TERMINAL_PROMPT="0")
+    if journal is not None:
+        rc, out = journal.run(
+            ["git", "clone", "--progress", "--depth", "1", "--single-branch", url, dest],
+            env=env, timeout=_CLONE_TIMEOUT_S)
+        if rc == 124:
+            return False, "clone timeout"
+        return rc == 0, out.strip()[-180:]
     try:
         r = subprocess.run(["git", "clone", "--depth", "1", "--single-branch", url, dest],
                            capture_output=True, text=True, timeout=_CLONE_TIMEOUT_S, env=env)
@@ -63,22 +71,31 @@ def _repo_name(url):
     return "/".join(url.rstrip("/").split("/")[-2:])
 
 
-def process_one(conn, row, db_path, emit):
+def process_one(conn, row, db_path, emit, journal=None):
     repo_id, url = row["id"], row["url"]
     name = _repo_name(url)
     dest = os.path.join(SCRATCH_ROOT, name.replace("/", "__"))
     shutil.rmtree(dest, ignore_errors=True)
+
+    def jevent(msg, level="info", **fields):
+        if journal:
+            journal.event(msg, level=level, repo=name, **fields)
+
+    jevent(f"repo start: {name}")
     try:
         free_gb = shutil.disk_usage(SCRATCH_ROOT).free / 1e9
         if free_gb < _MIN_FREE_GB:
             emit({"type": "log", "level": "warn", "msg": f"low disk {free_gb:.1f}GB — skipping {name}"})
+            jevent(f"low disk {free_gb:.1f}GB — skipping {name}", level="warn")
             store.mark_repo(conn, repo_id, "failed", reason=f"low disk {free_gb:.1f}GB")
             emit({"type": "repo_done", "repo": name, "status": "failed", "reason": "low disk"})
             return
 
         emit({"type": "stage", "repo": name, "stage": "cloning"})
-        ok, err = _clone(url, dest)
+        jevent(f"cloning {url}")
+        ok, err = _clone(url, dest, journal=journal)
         if not ok:
+            jevent(f"failed {name}: clone: {err}", level="error")
             store.mark_repo(conn, repo_id, "failed", reason=f"clone: {err}")
             emit({"type": "repo_done", "repo": name, "status": "failed", "reason": "clone"})
             return
@@ -86,20 +103,25 @@ def process_one(conn, row, db_path, emit):
         sha = _commit_sha(dest)
         size_mb = _dir_size_mb(dest)
         if size_mb > _MAX_REPO_MB:
+            jevent(f"failed {name}: too large {size_mb:.0f}MB", level="warn")
             store.mark_repo(conn, repo_id, "failed", reason=f"too large {size_mb:.0f}MB")
             emit({"type": "repo_done", "repo": name, "status": "failed", "reason": "too large"})
             return
 
         emit({"type": "stage", "repo": name, "stage": "compiling"})
+        jevent(f"compiling {name} ({size_mb:.0f}MB @ {sha[:10] if sha else '?'})")
         stats = run_pipeline.run(dest, repo=name, db_path=db_path,
-                                 progress=lambda e: emit({**e, "repo": name}))
+                                 progress=lambda e: emit({**e, "repo": name}),
+                                 journal=journal)
         store.mark_repo(conn, repo_id, "done", n_pairs=stats["pairs"], commit_sha=sha)
+        jevent(f"done {name}: {stats['pairs']} pairs ({stats['skipped']} skipped)")
         emit({"type": "repo_done", "repo": name, "status": "done",
               "pairs": stats["pairs"], "skipped": stats["skipped"]})
     except KeyboardInterrupt:
         store.mark_repo(conn, repo_id, "queued")   # let it be retried
         raise
     except Exception as e:  # one bad repo never kills the sweep
+        jevent(f"failed {name}: {str(e)[:180]}", level="error")
         store.mark_repo(conn, repo_id, "failed", reason=str(e)[:180])
         emit({"type": "repo_done", "repo": name, "status": "failed", "reason": str(e)[:50]})
     finally:
@@ -116,32 +138,42 @@ def harvest(db_path="dataset/pairs.db", limit=None, emit=lambda e: None,
     conn = store.connect(db_path)
     store.init_schema(conn)
     store.migrate(conn)
-    reset = store.reset_running_to_queued(conn)
-    if reset:
-        emit({"type": "log", "level": "info", "msg": f"recovered {reset} interrupted repo(s)"})
-
-    if discover_first and store.ledger_counts(conn)["queued"] < (limit or target):
-        emit({"type": "stage", "repo": "", "stage": "discovering"})
-        scrape.discover(db_path, target=(limit or target), emit=emit)
-
-    emit({"type": "progress", "processed": 0, **store.ledger_counts(conn)})
-
-    processed = 0
+    journal = Journal(emit=emit)
     try:
-        while limit is None or processed < limit:
-            if _stop["soft"]:
-                emit({"type": "log", "level": "info", "msg": "stopping after current queue drain"})
-                break
-            row = store.claim_next_queued(conn)
-            if row is None:
-                break
-            process_one(conn, row, db_path, emit)
-            processed += 1
-            emit({"type": "progress", "processed": processed, **store.ledger_counts(conn)})
-    except KeyboardInterrupt:
-        emit({"type": "log", "level": "warn", "msg": "aborted"})
-    conn.close()
-    return {"processed": processed}
+        journal.event(f"harvest start (limit={limit}, target={target})")
+        reset = store.reset_running_to_queued(conn)
+        if reset:
+            emit({"type": "log", "level": "info", "msg": f"recovered {reset} interrupted repo(s)"})
+            journal.event(f"recovered {reset} interrupted repo(s)")
+
+        if discover_first and store.ledger_counts(conn)["queued"] < (limit or target):
+            emit({"type": "stage", "repo": "", "stage": "discovering"})
+            scrape.discover(db_path, target=(limit or target), emit=emit, journal=journal)
+
+        emit({"type": "progress", "processed": 0, **store.ledger_counts(conn)})
+
+        processed = 0
+        try:
+            while limit is None or processed < limit:
+                if _stop["soft"]:
+                    emit({"type": "log", "level": "info", "msg": "stopping after current queue drain"})
+                    journal.event("soft stop: finishing current repo, then stopping", level="warn")
+                    break
+                row = store.claim_next_queued(conn)
+                if row is None:
+                    journal.event("queue empty")
+                    break
+                process_one(conn, row, db_path, emit, journal=journal)
+                processed += 1
+                emit({"type": "progress", "processed": processed, **store.ledger_counts(conn)})
+        except KeyboardInterrupt:
+            emit({"type": "log", "level": "warn", "msg": "aborted"})
+            journal.event("aborted by user", level="warn")
+        conn.close()
+        journal.event(f"harvest finished: {processed} repo(s) processed")
+        return {"processed": processed}
+    finally:
+        journal.close()
 
 
 def _plain(e):

@@ -31,7 +31,7 @@ def include_dirs_for(repo_dir: str):
 
 def run(repo_dir, repo=None, db_path="dataset/pairs.db",
         compilers=("gcc", "clang"), opt_levels=("O0", "O1", "O2", "O3", "Os"),
-        progress=None):
+        progress=None, journal=None):
     repo = repo or os.path.basename(os.path.abspath(repo_dir))
     os.makedirs(os.path.dirname(os.path.abspath(db_path)), exist_ok=True)
     conn = store.connect(db_path)
@@ -39,13 +39,18 @@ def run(repo_dir, repo=None, db_path="dataset/pairs.db",
 
     sources = find_sources(repo_dir)
     incs = include_dirs_for(repo_dir)
-    tc = env.start_toolchain(repo_dir)
+    tc = env.start_toolchain(repo_dir, journal=journal)
     stats = {"pairs": 0, "skipped": 0, "files": len(sources)}
     labels = {}
+    if journal:
+        journal.event(f"pipeline {repo}: {len(sources)} source file(s), "
+                      f"{len(compilers)}x{len(opt_levels)} compiler/opt matrix")
     try:
         for i, rel in enumerate(sources):
             if progress:
                 progress({"type": "file", "file": rel, "i": i + 1, "n": len(sources)})
+            if journal:
+                journal.event(f"file {i + 1}/{len(sources)}: {rel}")
             lang = extract.lang_for(rel)
             if lang is None:
                 continue
@@ -59,6 +64,10 @@ def run(repo_dir, repo=None, db_path="dataset/pairs.db",
                 for opt in opt_levels:
                     res = compile_mod.compile_tu(tc, rel, compiler, opt, lang, incs)
                     if not res.ok:
+                        if journal:
+                            reason1 = (res.reason or "").splitlines()[0][:160] if res.reason else ""
+                            journal.event(f"{compiler} {opt}: {rel} — {reason1}",
+                                          level="warn")
                         store.record_skip(conn, repo=repo, file_path=rel,
                                           opt_level=opt, reason=res.reason)
                         stats["skipped"] += 1
@@ -73,6 +82,9 @@ def run(repo_dir, repo=None, db_path="dataset/pairs.db",
                             stats["pairs"] += 1
     finally:
         tc.stop()
+    if journal:
+        journal.event(f"pipeline {repo}: {stats['pairs']} pairs, "
+                      f"{stats['skipped']} skipped")
     return stats
 
 

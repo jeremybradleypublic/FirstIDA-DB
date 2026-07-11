@@ -26,7 +26,7 @@ _SIZE_MAX_KB = 300_000
 _SEARCH_PACE_S = 2.1          # search API is ~30/min; stay under it
 
 
-def _gh_search(lang, topic, bucket, limit=60):
+def _gh_search(lang, topic, bucket, limit=60, journal=None):
     cmd = ["gh", "search", "repos",
            "fork:false pushed:>2021-01-01",
            "--language", _LANG_GH[lang],
@@ -35,6 +35,8 @@ def _gh_search(lang, topic, bucket, limit=60):
            "--archived=false",
            "--limit", str(limit),
            "--json", "fullName,url,stargazersCount,license,owner,isFork,size"]
+    if journal:
+        journal.cmd(cmd)
     try:
         r = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
     except subprocess.TimeoutExpired:
@@ -68,27 +70,35 @@ def _keep(item):
             "stars": item.get("stargazersCount", 0), "license": lic}
 
 
-def discover(db_path, target=50, emit=lambda e: None):
+def discover(db_path, target=50, emit=lambda e: None, journal=None):
     """Search slices until ~target*4 candidates gathered, then queue up to target*2
     (highest-starred first, capped per owner). Returns count newly queued."""
     conn = store.connect(db_path)
     store.init_schema(conn)
     store.migrate(conn)
 
+    if journal:
+        journal.event(f"discovery: searching GitHub for up to {target} repos")
     candidates = {}
     slices = [(l, t, b) for l in LANGS for t in TOPICS for b in BUCKETS]
     for lang, topic, bucket in slices:
-        data, err = _gh_search(lang, topic, bucket)
+        data, err = _gh_search(lang, topic, bucket, journal=journal)
         found = len(data) if data else 0
         emit({"type": "discover", "slice": f"{lang}/{topic}/{bucket}", "found": found})
         if err:
             emit({"type": "log", "level": "warn", "msg": f"gh {lang}/{topic}/{bucket}: {err}"})
+            if journal:
+                journal.event(f"gh {lang}/{topic}/{bucket}: {err}", level="warn")
             if "rate limit" in err.lower() or "secondary" in err.lower():
                 emit({"type": "log", "level": "warn", "msg": "search rate limit; backing off 30s"})
+                if journal:
+                    journal.event("search rate limit; backing off 30s", level="warn")
                 time.sleep(30)
             else:
                 time.sleep(_SEARCH_PACE_S)
             continue
+        if journal:
+            journal.event(f"slice {lang}/{topic}/{bucket} → {found} repos")
         if found == 1000:
             emit({"type": "log", "level": "warn",
                   "msg": f"slice {lang}/{topic}/{bucket} saturated (1000)"})
@@ -113,6 +123,9 @@ def discover(db_path, target=50, emit=lambda e: None):
     conn.close()
     emit({"type": "log", "level": "info",
           "msg": f"discovery: {len(candidates)} candidates, {queued} newly queued"})
+    if journal:
+        journal.event(f"discovery finished: {len(candidates)} candidates, "
+                      f"{queued} newly queued")
     return queued
 
 
