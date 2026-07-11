@@ -30,7 +30,8 @@ def include_dirs_for(repo_dir: str):
 
 
 def run(repo_dir, repo=None, db_path="dataset/pairs.db",
-        compilers=("gcc", "clang"), opt_levels=("O0", "O1", "O2", "O3", "Os")):
+        compilers=("gcc", "clang"), opt_levels=("O0", "O1", "O2", "O3", "Os"),
+        progress=None):
     repo = repo or os.path.basename(os.path.abspath(repo_dir))
     os.makedirs(os.path.dirname(os.path.abspath(db_path)), exist_ok=True)
     conn = store.connect(db_path)
@@ -42,7 +43,9 @@ def run(repo_dir, repo=None, db_path="dataset/pairs.db",
     stats = {"pairs": 0, "skipped": 0, "files": len(sources)}
     labels = {}
     try:
-        for rel in sources:
+        for i, rel in enumerate(sources):
+            if progress:
+                progress({"type": "file", "file": rel, "i": i + 1, "n": len(sources)})
             lang = extract.lang_for(rel)
             if lang is None:
                 continue

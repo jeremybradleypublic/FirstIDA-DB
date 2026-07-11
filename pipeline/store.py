@@ -1,5 +1,6 @@
 import hashlib
 import sqlite3
+from datetime import datetime, timezone
 
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS pairs (
@@ -26,6 +27,7 @@ def _sha1(s: str) -> str:
 
 def connect(db_path: str) -> sqlite3.Connection:
     conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
     return conn
 
@@ -62,3 +64,64 @@ def record_skip(conn, *, repo, file_path, opt_level, reason) -> None:
 
 def count_pairs(conn) -> int:
     return conn.execute("SELECT COUNT(*) FROM pairs").fetchone()[0]
+
+
+# --- repos ledger (Phase-2 harvest) ---------------------------------------
+
+def migrate(conn) -> None:
+    """Idempotent: make `repos.url` the dedup key and add harvest columns."""
+    conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_repos_url ON repos(url)")
+    cols = {r[1] for r in conn.execute("PRAGMA table_info(repos)")}
+    if "reason" not in cols:
+        conn.execute("ALTER TABLE repos ADD COLUMN reason TEXT")
+    if "stars" not in cols:
+        conn.execute("ALTER TABLE repos ADD COLUMN stars INTEGER")
+    conn.commit()
+
+
+def ensure_repo_queued(conn, url, license, stars) -> bool:
+    """Queue a repo for harvesting. Returns True if newly inserted."""
+    cur = conn.execute(
+        "INSERT OR IGNORE INTO repos (url, license, stars, status) VALUES (?,?,?,'queued')",
+        (url, license, stars),
+    )
+    conn.commit()
+    return cur.rowcount == 1
+
+
+def reset_running_to_queued(conn) -> int:
+    """Recover repos left 'running' by a previous crash. Returns count reset."""
+    cur = conn.execute("UPDATE repos SET status='queued' WHERE status='running'")
+    conn.commit()
+    return cur.rowcount
+
+
+def claim_next_queued(conn):
+    """Atomically take the next queued repo (highest stars first) and mark it running."""
+    row = conn.execute(
+        "SELECT * FROM repos WHERE status='queued' "
+        "ORDER BY (stars IS NULL), stars DESC, id LIMIT 1"
+    ).fetchone()
+    if row is not None:
+        conn.execute("UPDATE repos SET status='running' WHERE id=?", (row["id"],))
+        conn.commit()
+    return row
+
+
+def mark_repo(conn, repo_id, status, *, n_pairs=None, commit_sha=None, reason=None) -> None:
+    conn.execute(
+        """UPDATE repos SET status=?,
+               n_pairs=COALESCE(?, n_pairs),
+               commit_sha=COALESCE(?, commit_sha),
+               reason=COALESCE(?, reason),
+               processed_at=? WHERE id=?""",
+        (status, n_pairs, commit_sha, reason,
+         datetime.now(timezone.utc).isoformat(timespec="seconds"), repo_id),
+    )
+    conn.commit()
+
+
+def ledger_counts(conn) -> dict:
+    d = {r[0]: r[1] for r in conn.execute("SELECT status, COUNT(*) FROM repos GROUP BY status")}
+    return {"queued": d.get("queued", 0), "running": d.get("running", 0),
+            "done": d.get("done", 0), "failed": d.get("failed", 0)}

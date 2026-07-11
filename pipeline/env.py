@@ -1,4 +1,5 @@
 import os
+import shutil
 import subprocess
 import tempfile
 import uuid
@@ -45,6 +46,7 @@ class Toolchain:
 
     def stop(self):
         _run(["docker", "rm", "-f", self.container])
+        shutil.rmtree(self.scratch, ignore_errors=True)
 
 
 def start_toolchain(repo_dir: str, image: str = IMAGE) -> Toolchain:
