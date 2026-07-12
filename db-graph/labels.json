@@ -1,6 +1,18 @@
 {
-  "0": {
-    "name": "Disassembly Pair Corpus",
-    "summary": "The complete FirstIDA-DB dataset generation record: ~85K matched (C source, x86-64 disassembly) function pairs with build metadata and content hashes, the ~14K-row log of source files that failed to compile, and the 116-repo provenance ledger of upstream GitHub projects. Together these three tables record what was produced, what was dropped, and where it came from."
-  }
+ "0": {
+  "name": "Disassembly Pair Corpus",
+  "summary": "The pairs table and its compilation-matrix facets: compilers, optimization levels, languages, origins."
+ },
+ "1": {
+  "name": "Repo Provenance",
+  "summary": "Harvested repositories with license mix and pipeline status."
+ },
+ "2": {
+  "name": "Labeled Training View",
+  "summary": "pairs_labeled view facets adding source_system over the same corpus."
+ },
+ "3": {
+  "name": "Skipped Compilations",
+  "summary": "Files that failed to compile, spread evenly across optimization levels."
+ }
 }

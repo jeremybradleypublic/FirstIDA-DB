@@ -34,5 +34,17 @@
     "target": "table:pairs",
     "relation": "failed-compile counterpart of successful pairs (same repo/file_path/opt_level space)",
     "confidence": "INFERRED"
+  },
+  {
+    "source": "table:pairs_labeled",
+    "target": "table:pairs",
+    "relation": "view over",
+    "confidence": "EXTRACTED"
+  },
+  {
+    "source": "table:skipped",
+    "target": "table:repos",
+    "relation": "failures from harvested repos",
+    "confidence": "INFERRED"
   }
 ]

@@ -3,9 +3,9 @@
     "id": "table:pairs",
     "kind": "table",
     "name": "pairs",
-    "content_sample": "CREATE TABLE pairs (\n    id          INTEGER PRIMARY KEY,\n    repo        TEXT, file_path TEXT, func_name TEXT, signature TEXT, lang TEXT,\n    arch        TEXT, opt_level TEXT, obj_format TEXT, compiler TEXT,\n    source_text TEXT, asm_text TEXT,\n    source_hash TEXT, asm_hash TEXT,\n    pair_hash   TEXT UNIQUE\n, origin TEXT, session TEXT)\n-- columns: id, repo, file_path, func_name, signature, lang, arch, opt_level, obj_format, compiler, source_text, asm_text, source_hash, asm_hash, pair_hash, origin, session\n-- 94311 rows\n-- profile:\n--   repo: 20+ distinct, 0.0% null, top: resilar/sqleet(17544), gopro/cineform-sdk(11887), celabshq/libcrux(10190), schnaader/precomp-cpp(6930), toprakdeviren/msf(5598)\n--   file_path: 20+ distinct, 0.0% null, top: sqlite3.c(15160), shell.c(2103), src/tests.c(1303), parson.c(1242), src/md4c.c(1202)\n--   func_name: 20+ distinct, 0.0% null, top: main(1977), read_char(177), write_char(166), read(105), prepare_input(93)\n--   signature: text, avg 81 chars\n--   lang: 2 distinct, 0.0% null, top: c(87301), cpp(7010)\n--   arch: 1 distinct, 0.0% null, top: x86_64(94311)\n--   opt_level: 6 distinct, 0.0% null, top: O0(25970), Os(19554), O1(19405), O2(17249), O3(12091)\n--   obj_format: 2 distinct, 0.0% null, top: elf(94269), rawx86_64(42)\n--   compiler: 3 distinct, 0.0% null, top: gcc-12.2.0(49646), clang-14.0.6(44623), asmjit(42)\n--   source_text: text, avg 1910 chars\n--   asm_text: text, avg 8245 chars\n--   source_hash: 20+ distinct, 0.0% null, top: f3a1cc0d6f0c1e5016fe0feaf9c49416ec31ca46(132), 4b3bb5caddc33dcd9c9b6fa5465aa2cea53dd48d(131), 5cb3c8ff069622cf4f246dabb0391f4ea2a6b70a(45), bf936942322763356f7d2290c8219206ce87c159(33), c7fee2f406e12d24a88b86bf76746f938ed64451(28)\n--   asm_hash: 20+ distinct, 0.0% null, top: 0c52d983a1d3eddd0d86a201db43016081c75109(8), 2700cb8a5d194fa98e01bbc02a192a971652c9ff(7), 48db371122eaa8a3370b2a7b12a94bb98d434809(7), 4e3bbda134198ed9e2162da7cdc740e0c4ce83b8(7), 66d402540db5fa283aff8e0f8b88977b5219e9d1(7)\n--   pair_hash: 20+ distinct, 0.0% null, top: 000109fcd4f04d7f80d666b60a2555f224be172a(1), 00016ae20c5f3ac7b53183865cf5effcbf63a5d0(1), 0002087b539d040179c182868fbece01f88bccf2(1), 00021a2c3e1723ca4d3694b95fb41958d67b8a21(1), 00026adee3f5cd5d2ea36091a0af31e7327bd4a1(1)\n--   origin: 3 distinct, 0.0% null, top: harvest(93655), gen:direct(614), gen:hybrid(42)\n--   session: 2 distinct, 99.8% null, top: scrape-20260711T212132Z(177), gen-20260711T211742Z(8)\n-- sample:\n(1, 'zlib', 'adler32.c', 'adler32_combine64', 'uLong ZEXPORT adler32_combine64(uLong adler1, uLong adler2, z_off64_t len2)', 'c', 'x86_64', 'O0', 'elf', 'gcc-12.2.0', 'uLong ZEXPORT adler32_combine64(uLong adler1, uLong adler2, z_off64_t len2) {\\n    return adler32_combine_(adler1, adler2, len2);\\n}', '<adler32_combine64>:\\n 767:\\t55                   \\tpush   %rbp\\n 768:\\t48 89 e5             \\tmov    %rsp,%rbp\\n 76b:\\t48 83 ec 18          \\tsub    $0x18,%rsp\\n 76f:\\t48 89 7d f8          \\tmov    %rdi,-0x8(%rbp)\\n 773:\\t48 89 75 f0          \\tmov    %rsi,-0x10(%rbp)\\n 777:\\t48 89 55 e8          \\tmov    %rdx,-0x18(%rbp)\\n 77b:\\t48 8b 55 e8          \\tmov    -0x18(%rbp),%rdx\\n 77f:\\t48 8b 4d f0          \\tmov    -0x10(%rbp),%rcx\\n 783:\\t48 8b 45 f8          \\tmov    -0x8(%rbp),%rax\\n 787:\\t48 89 ce             \\tmov    %rcx,%rsi\\n 78a:\\t48 89 c7             \\tmov    %rax,%rdi\\n 78d:\\te8 59 fe ff ff       \\tcall   5eb <adler32_combine_>\\n 792:\\tc9                   \\tleave\\n 793:\\tc3                   \\tret', '01b5eb32a6bddeb5b0497284196eca65769fc768', '7aab998542a68c39f16dccc350faa388952545ae', '37fdf5ba0c1573967128a36e910a9a1d95636cf7', 'harvest', None)\n(2, 'zlib', 'adler32.c', 'adler32_combine', 'uLong ZEXPORT adler32_combine(uLong adler1, uLong adler2, z_off_t len2)', 'c', 'x86_64', 'O0', 'elf', 'gcc-12.2.0', 'uLong ZEXPORT adler32_combine(uLong adler1, uLong adler2, z_off_t len2) {\\n    return adler32_combine_(adler1, adler2, len2);\\n}', '<adler32_combine>:\\n 73a:\\t55                   \\tpush   %rbp\\n 73b:\\t48 8",
+    "content_sample": "CREATE TABLE pairs (\n    id          INTEGER PRIMARY KEY,\n    repo        TEXT, file_path TEXT, func_name TEXT, signature TEXT, lang TEXT,\n    arch        TEXT, opt_level TEXT, obj_format TEXT, compiler TEXT,\n    source_text TEXT, asm_text TEXT,\n    source_hash TEXT, asm_hash TEXT,\n    pair_hash   TEXT UNIQUE\n, origin TEXT, session TEXT)\n-- columns: id, repo, file_path, func_name, signature, lang, arch, opt_level, obj_format, compiler, source_text, asm_text, source_hash, asm_hash, pair_hash, origin, session\n-- 110256 rows\n-- profile:\n--   repo: 20+ distinct, 0.0% null, top: resilar/sqleet(17544), gopro/cineform-sdk(11887), kala13x/libxutils(10333), celabshq/libcrux(10190), schnaader/precomp-cpp(6930)\n--   file_path: 20+ distinct, 0.0% null, top: sqlite3.c(15160), shell.c(2103), src/tests.c(1303), parson.c(1242), src/md4c.c(1202)\n--   func_name: 20+ distinct, 0.0% null, top: main(2448), read_char(177), write_char(166), read(105), prepare_input(93)\n--   signature: text, avg 81 chars\n--   lang: 2 distinct, 0.0% null, top: c(103246), cpp(7010)\n--   arch: 1 distinct, 0.0% null, top: x86_64(110256)\n--   opt_level: 6 distinct, 0.0% null, top: O0(30123), Os(22945), O1(22767), O2(20141), O3(14038)\n--   obj_format: 2 distinct, 0.0% null, top: elf(110014), rawx86_64(242)\n--   compiler: 3 distinct, 0.0% null, top: gcc-12.2.0(57988), clang-14.0.6(52026), asmjit(242)\n--   source_text: text, avg 1910 chars\n--   asm_text: text, avg 8245 chars\n--   source_hash: 20+ distinct, 0.0% null, top: f3a1cc0d6f0c1e5016fe0feaf9c49416ec31ca46(132), 4b3bb5caddc33dcd9c9b6fa5465aa2cea53dd48d(131), 5cb3c8ff069622cf4f246dabb0391f4ea2a6b70a(45), bf936942322763356f7d2290c8219206ce87c159(33), c7fee2f406e12d24a88b86bf76746f938ed64451(28)\n--   asm_hash: 20+ distinct, 0.0% null, top: 0c52d983a1d3eddd0d86a201db43016081c75109(8), 2700cb8a5d194fa98e01bbc02a192a971652c9ff(7), 48db371122eaa8a3370b2a7b12a94bb98d434809(7), 4e3bbda134198ed9e2162da7cdc740e0c4ce83b8(7), 66d402540db5fa283aff8e0f8b88977b5219e9d1(7)\n--   pair_hash: 20+ distinct, 0.0% null, top: 000109fcd4f04d7f80d666b60a2555f224be172a(1), 00016ae20c5f3ac7b53183865cf5effcbf63a5d0(1), 0002087b539d040179c182868fbece01f88bccf2(1), 00021a2c3e1723ca4d3694b95fb41958d67b8a21(1), 00026adee3f5cd5d2ea36091a0af31e7327bd4a1(1)\n--   origin: 3 distinct, 0.0% null, top: harvest(108586), gen:direct(1428), gen:hybrid(242)\n--   session: 4 distinct, 85.4% null, top: scrape-20260712T002029Z(14931), gen-20260712T002030Z(1014), scrape-20260711T212132Z(177), gen-20260711T211742Z(8)\n-- sample:\n(1, 'zlib', 'adler32.c', 'adler32_combine64', 'uLong ZEXPORT adler32_combine64(uLong adler1, uLong adler2, z_off64_t len2)', 'c', 'x86_64', 'O0', 'elf', 'gcc-12.2.0', 'uLong ZEXPORT adler32_combine64(uLong adler1, uLong adler2, z_off64_t len2) {\\n    return adler32_combine_(adler1, adler2, len2);\\n}', '<adler32_combine64>:\\n 767:\\t55                   \\tpush   %rbp\\n 768:\\t48 89 e5             \\tmov    %rsp,%rbp\\n 76b:\\t48 83 ec 18          \\tsub    $0x18,%rsp\\n 76f:\\t48 89 7d f8          \\tmov    %rdi,-0x8(%rbp)\\n 773:\\t48 89 75 f0          \\tmov    %rsi,-0x10(%rbp)\\n 777:\\t48 89 55 e8          \\tmov    %rdx,-0x18(%rbp)\\n 77b:\\t48 8b 55 e8          \\tmov    -0x18(%rbp),%rdx\\n 77f:\\t48 8b 4d f0          \\tmov    -0x10(%rbp),%rcx\\n 783:\\t48 8b 45 f8          \\tmov    -0x8(%rbp),%rax\\n 787:\\t48 89 ce             \\tmov    %rcx,%rsi\\n 78a:\\t48 89 c7             \\tmov    %rax,%rdi\\n 78d:\\te8 59 fe ff ff       \\tcall   5eb <adler32_combine_>\\n 792:\\tc9                   \\tleave\\n 793:\\tc3                   \\tret', '01b5eb32a6bddeb5b0497284196eca65769fc768', '7aab998542a68c39f16dccc350faa388952545ae', '37fdf5ba0c1573967128a36e910a9a1d95636cf7', 'harvest', None)\n(2, 'zlib', 'adler32.c', 'adler32_combine', 'uLong ZEXPORT adler32_combine(uLong adler1, uLong adler2, z_off_t len2)', 'c', 'x86_64', 'O0', 'elf', 'gcc-12.2.0', 'uLong ZEXPORT adler32_combine(uLong adler1, uLong adler2, z_off_t len2) {\\n    return adler32_combine_(adler1, adler2, len2);\\n}', '<adl",
     "stats": {
-      "rows": 94311,
+      "rows": 110256,
       "columns": 17,
       "profile": {
         "repo": {
@@ -21,16 +21,16 @@
               11887
             ],
             [
+              "kala13x/libxutils",
+              10333
+            ],
+            [
               "celabshq/libcrux",
               10190
             ],
             [
               "schnaader/precomp-cpp",
               6930
-            ],
-            [
-              "toprakdeviren/msf",
-              5598
             ]
           ]
         },
@@ -66,7 +66,7 @@
           "top": [
             [
               "main",
-              1977
+              2448
             ],
             [
               "read_char",
@@ -95,7 +95,7 @@
           "top": [
             [
               "c",
-              87301
+              103246
             ],
             [
               "cpp",
@@ -109,7 +109,7 @@
           "top": [
             [
               "x86_64",
-              94311
+              110256
             ]
           ]
         },
@@ -119,23 +119,23 @@
           "top": [
             [
               "O0",
-              25970
+              30123
             ],
             [
               "Os",
-              19554
+              22945
             ],
             [
               "O1",
-              19405
+              22767
             ],
             [
               "O2",
-              17249
+              20141
             ],
             [
               "O3",
-              12091
+              14038
             ]
           ]
         },
@@ -145,11 +145,11 @@
           "top": [
             [
               "elf",
-              94269
+              110014
             ],
             [
               "rawx86_64",
-              42
+              242
             ]
           ]
         },
@@ -159,15 +159,15 @@
           "top": [
             [
               "gcc-12.2.0",
-              49646
+              57988
             ],
             [
               "clang-14.0.6",
-              44623
+              52026
             ],
             [
               "asmjit",
-              42
+              242
             ]
           ]
         },
@@ -261,22 +261,30 @@
           "top": [
             [
               "harvest",
-              93655
+              108586
             ],
             [
               "gen:direct",
-              614
+              1428
             ],
             [
               "gen:hybrid",
-              42
+              242
             ]
           ]
         },
         "session": {
-          "distinct": 2,
-          "null_pct": 99.8,
+          "distinct": 4,
+          "null_pct": 85.4,
           "top": [
+            [
+              "scrape-20260712T002029Z",
+              14931
+            ],
+            [
+              "gen-20260712T002030Z",
+              1014
+            ],
             [
               "scrape-20260711T212132Z",
               177
@@ -291,19 +299,19 @@
       "coverage_gaps": [
         "compiler=asmjit x origin=gen:direct",
         "compiler=asmjit x origin=harvest",
-        "compiler=clang-14.0.6 x origin=gen:hybrid"
+        "compiler=asmjit x session=scrape-20260711T212132Z"
       ]
     },
-    "content_hash": "8be7e4b387a9287c"
+    "content_hash": "b697d600ae6f5ba6"
   },
   {
     "id": "facet:pairs.lang=c",
     "kind": "facet",
     "name": "lang=c",
-    "content_sample": "lang=c in 87301 of 94311 rows",
+    "content_sample": "lang=c in 103246 of 110256 rows",
     "stats": {
-      "rows": 87301,
-      "pct": 92.6,
+      "rows": 103246,
+      "pct": 93.6,
       "table": "table:pairs",
       "column": "lang"
     },
@@ -313,10 +321,10 @@
     "id": "facet:pairs.lang=cpp",
     "kind": "facet",
     "name": "lang=cpp",
-    "content_sample": "lang=cpp in 7010 of 94311 rows",
+    "content_sample": "lang=cpp in 7010 of 110256 rows",
     "stats": {
       "rows": 7010,
-      "pct": 7.4,
+      "pct": 6.4,
       "table": "table:pairs",
       "column": "lang"
     },
@@ -326,10 +334,10 @@
     "id": "facet:pairs.obj_format=elf",
     "kind": "facet",
     "name": "obj_format=elf",
-    "content_sample": "obj_format=elf in 94269 of 94311 rows",
+    "content_sample": "obj_format=elf in 110014 of 110256 rows",
     "stats": {
-      "rows": 94269,
-      "pct": 100.0,
+      "rows": 110014,
+      "pct": 99.8,
       "table": "table:pairs",
       "column": "obj_format"
     },
@@ -339,49 +347,23 @@
     "id": "facet:pairs.obj_format=rawx86_64",
     "kind": "facet",
     "name": "obj_format=rawx86_64",
-    "content_sample": "obj_format=rawx86_64 in 42 of 94311 rows",
+    "content_sample": "obj_format=rawx86_64 in 242 of 110256 rows",
     "stats": {
-      "rows": 42,
-      "pct": 0.0,
+      "rows": 242,
+      "pct": 0.2,
       "table": "table:pairs",
       "column": "obj_format"
     },
     "content_hash": "2da41bd964ab311b"
   },
   {
-    "id": "facet:pairs.session=gen-20260711T211742Z",
-    "kind": "facet",
-    "name": "session=gen-20260711T211742Z",
-    "content_sample": "session=gen-20260711T211742Z in 8 of 94311 rows",
-    "stats": {
-      "rows": 8,
-      "pct": 0.0,
-      "table": "table:pairs",
-      "column": "session"
-    },
-    "content_hash": "1a592f6bfb905e62"
-  },
-  {
-    "id": "facet:pairs.session=scrape-20260711T212132Z",
-    "kind": "facet",
-    "name": "session=scrape-20260711T212132Z",
-    "content_sample": "session=scrape-20260711T212132Z in 177 of 94311 rows",
-    "stats": {
-      "rows": 177,
-      "pct": 0.2,
-      "table": "table:pairs",
-      "column": "session"
-    },
-    "content_hash": "cf76d8cb4f1cc676"
-  },
-  {
     "id": "facet:pairs.compiler=asmjit",
     "kind": "facet",
     "name": "compiler=asmjit",
-    "content_sample": "compiler=asmjit in 42 of 94311 rows",
+    "content_sample": "compiler=asmjit in 242 of 110256 rows",
     "stats": {
-      "rows": 42,
-      "pct": 0.0,
+      "rows": 242,
+      "pct": 0.2,
       "table": "table:pairs",
       "column": "compiler"
     },
@@ -391,10 +373,10 @@
     "id": "facet:pairs.compiler=clang-14.0.6",
     "kind": "facet",
     "name": "compiler=clang-14.0.6",
-    "content_sample": "compiler=clang-14.0.6 in 44623 of 94311 rows",
+    "content_sample": "compiler=clang-14.0.6 in 52026 of 110256 rows",
     "stats": {
-      "rows": 44623,
-      "pct": 47.3,
+      "rows": 52026,
+      "pct": 47.2,
       "table": "table:pairs",
       "column": "compiler"
     },
@@ -404,9 +386,9 @@
     "id": "facet:pairs.compiler=gcc-12.2.0",
     "kind": "facet",
     "name": "compiler=gcc-12.2.0",
-    "content_sample": "compiler=gcc-12.2.0 in 49646 of 94311 rows",
+    "content_sample": "compiler=gcc-12.2.0 in 57988 of 110256 rows",
     "stats": {
-      "rows": 49646,
+      "rows": 57988,
       "pct": 52.6,
       "table": "table:pairs",
       "column": "compiler"
@@ -417,10 +399,10 @@
     "id": "facet:pairs.origin=gen:direct",
     "kind": "facet",
     "name": "origin=gen:direct",
-    "content_sample": "origin=gen:direct in 614 of 94311 rows",
+    "content_sample": "origin=gen:direct in 1428 of 110256 rows",
     "stats": {
-      "rows": 614,
-      "pct": 0.7,
+      "rows": 1428,
+      "pct": 1.3,
       "table": "table:pairs",
       "column": "origin"
     },
@@ -430,10 +412,10 @@
     "id": "facet:pairs.origin=gen:hybrid",
     "kind": "facet",
     "name": "origin=gen:hybrid",
-    "content_sample": "origin=gen:hybrid in 42 of 94311 rows",
+    "content_sample": "origin=gen:hybrid in 242 of 110256 rows",
     "stats": {
-      "rows": 42,
-      "pct": 0.0,
+      "rows": 242,
+      "pct": 0.2,
       "table": "table:pairs",
       "column": "origin"
     },
@@ -443,22 +425,74 @@
     "id": "facet:pairs.origin=harvest",
     "kind": "facet",
     "name": "origin=harvest",
-    "content_sample": "origin=harvest in 93655 of 94311 rows",
+    "content_sample": "origin=harvest in 108586 of 110256 rows",
     "stats": {
-      "rows": 93655,
-      "pct": 99.3,
+      "rows": 108586,
+      "pct": 98.5,
       "table": "table:pairs",
       "column": "origin"
     },
     "content_hash": "9ecc10194de42cbf"
   },
   {
+    "id": "facet:pairs.session=gen-20260711T211742Z",
+    "kind": "facet",
+    "name": "session=gen-20260711T211742Z",
+    "content_sample": "session=gen-20260711T211742Z in 8 of 110256 rows",
+    "stats": {
+      "rows": 8,
+      "pct": 0.0,
+      "table": "table:pairs",
+      "column": "session"
+    },
+    "content_hash": "1a592f6bfb905e62"
+  },
+  {
+    "id": "facet:pairs.session=gen-20260712T002030Z",
+    "kind": "facet",
+    "name": "session=gen-20260712T002030Z",
+    "content_sample": "session=gen-20260712T002030Z in 1014 of 110256 rows",
+    "stats": {
+      "rows": 1014,
+      "pct": 0.9,
+      "table": "table:pairs",
+      "column": "session"
+    },
+    "content_hash": "8bed3fef5fe3803b"
+  },
+  {
+    "id": "facet:pairs.session=scrape-20260711T212132Z",
+    "kind": "facet",
+    "name": "session=scrape-20260711T212132Z",
+    "content_sample": "session=scrape-20260711T212132Z in 177 of 110256 rows",
+    "stats": {
+      "rows": 177,
+      "pct": 0.2,
+      "table": "table:pairs",
+      "column": "session"
+    },
+    "content_hash": "cf76d8cb4f1cc676"
+  },
+  {
+    "id": "facet:pairs.session=scrape-20260712T002029Z",
+    "kind": "facet",
+    "name": "session=scrape-20260712T002029Z",
+    "content_sample": "session=scrape-20260712T002029Z in 14931 of 110256 rows",
+    "stats": {
+      "rows": 14931,
+      "pct": 13.5,
+      "table": "table:pairs",
+      "column": "session"
+    },
+    "content_hash": "1053b2e29f6f178c"
+  },
+  {
     "id": "table:skipped",
     "kind": "table",
     "name": "skipped",
-    "content_sample": "CREATE TABLE skipped (\n    id INTEGER PRIMARY KEY, repo TEXT, file_path TEXT, opt_level TEXT, reason TEXT\n)\n-- columns: id, repo, file_path, opt_level, reason\n-- 14958 rows\n-- profile:\n--   repo: 20+ distinct, 0.0% null, top: aws/s2n-tls(2963), cossacklabs/themis(1530), pgmoneta/pgmoneta(1490), liquidaty/zsv(1450), pyca/pynacl(1060)\n--   file_path: 20+ distinct, 0.0% null, top: bindings/node/binding.cc(40), bin/echo.c(20), bin/policy.c(20), bin/s2nc.c(20), bin/s2nd.c(20)\n--   opt_level: 5 distinct, 0.0% null, top: O0(2992), O2(2992), O3(2992), O1(2991), Os(2991)\n--   reason: text, avg 268 chars\n-- sample:\n(1, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'O0', '/src/contrib/crc32vx/crc32_vx.c:20:10: fatal error: vecintrin.h: No such file or directory\\n   20 | #include <vecintrin.h>\\n      |          ^~~~~~~~~~~~~\\ncompilation terminated.')\n(2, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'O1', '/src/contrib/crc32vx/crc32_vx.c:20:10: fatal error: vecintrin.h: No such file or directory\\n   20 | #include <vecintrin.h>\\n      |          ^~~~~~~~~~~~~\\ncompilation terminated.')\n(3, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'O2', '/src/contrib/crc32vx/crc32_vx.c:20:10: fatal error: vecintrin.h: No such file or directory\\n   20 | #include <vecintrin.h>\\n      |          ^~~~~~~~~~~~~\\ncompilation terminated.')\n(4, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'O3', '/src/contrib/crc32vx/crc32_vx.c:20:10: fatal error: vecintrin.h: No such file or directory\\n   20 | #include <vecintrin.h>\\n      |          ^~~~~~~~~~~~~\\ncompilation terminated.')\n(5, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'Os', '/src/contrib/crc32vx/crc32_vx.c:20:10: fatal error: vecintrin.h: No such file or directory\\n   20 | #include <vecintrin.h>\\n      |          ^~~~~~~~~~~~~\\ncompilation terminated.')\n(6, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'O0', 'In file included from /src/contrib/crc32vx/crc32_vx.c:20:\\n/usr/lib/llvm-14/lib/clang/14.0.6/include/vecintrin.h:11125:2: error: \"Use -fzvector to enable vector extensions\"\\n#error \"Use -fzvector to enable vector extensions\"\\n ^\\n/src/contrib/crc32vx/crc32_vx.c:79:17: warning: implicit declaration of function \\'vec_insert\\' is invalid in C99 [-Wimplicit-function-declaration]\\n    v0 = (uv2di)vec_insert(crc, (uv4si)v0, 3);\\n                ^\\n/src/contrib/crc32vx/crc32_vx.c:79:10: error: invalid conversion between vector type \\'uv2di\\' (vector of 2 \\'unsigned long long\\' values) and integer type \\'int\\' of different size\\n    v0 = (uv2di)vec_insert(crc, (uv4si)v0, 3);\\n         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\n/src/contrib/crc32vx/crc32_vx.c:82:16: warning: implicit declaration of function \\'vec_perm\\' is invalid in C99 [-Wimplicit-function-declaration]\\n    uv2di v1 = vec_perm(((uv2di *)buf)[0], ((uv2di *)buf)[0], perm_le2be);\\n               ^\\n/src/contrib/crc32vx/crc32_vx.c:82:11: error: initializing \\'uv2di\\' (vector of 2 \\'unsigned long long\\' values) with an expression of incompatible type \\'int\\'\\n    uv2di v1 = vec_perm(((uv2di *)buf)[0], ((uv2di *)buf)[0], perm_le2be);\\n          ^    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\n/src/contrib/crc32vx/crc32_vx.c:83:11: error: initializing \\'uv2di\\' (vector of 2 \\'unsigned long long\\' values) with an expression of incompatible type \\'int\\'\\n    uv2di v2 = vec_perm(((uv2di *)buf)[1], ((uv2di *)buf)[1], perm_le2be);\\n          ^    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\n/src/contrib/crc32vx/crc32_vx.c:84:11: error: initializing \\'uv2di\\' (vector of 2 \\'unsigned long long\\' values) with an expression of incompatible type \\'int\\'\\n    uv2di v3 = vec_perm(((uv2di *)buf)[2], ((uv2di *)buf)[2], perm_le2be);\\n          ^    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\n/src/contrib/crc32vx/crc32_vx.c:85:11: error: initializing \\'uv2di\\' (vector of 2 \\'unsigned long long\\' values) with an expression of incompatible ty')\n(7, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'O1', 'In file included from /src/contrib/crc32vx/crc32_vx.c:20:\\n/usr/lib/llvm-14/l",
+    "content_sample": "CREATE TABLE skipped (\n    id INTEGER PRIMARY KEY, repo TEXT, file_path TEXT, opt_level TEXT, reason TEXT\n)\n-- columns: id, repo, file_path, opt_level, reason\n-- 16788 rows\n-- profile:\n--   repo: 20+ distinct, 0.0% null, top: aws/s2n-tls(2963), cossacklabs/themis(1530), pgmoneta/pgmoneta(1490), liquidaty/zsv(1450), darvincisec/DetectTamper(1310)\n--   file_path: 20+ distinct, 0.0% null, top: bindings/node/binding.cc(40), src/main.c(30), bin/echo.c(20), bin/policy.c(20), bin/s2nc.c(20)\n--   opt_level: 5 distinct, 0.0% null, top: O0(3358), O2(3358), O3(3358), O1(3357), Os(3357)\n--   reason: text, avg 268 chars\n-- sample:\n(1, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'O0', '/src/contrib/crc32vx/crc32_vx.c:20:10: fatal error: vecintrin.h: No such file or directory\\n   20 | #include <vecintrin.h>\\n      |          ^~~~~~~~~~~~~\\ncompilation terminated.')\n(2, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'O1', '/src/contrib/crc32vx/crc32_vx.c:20:10: fatal error: vecintrin.h: No such file or directory\\n   20 | #include <vecintrin.h>\\n      |          ^~~~~~~~~~~~~\\ncompilation terminated.')\n(3, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'O2', '/src/contrib/crc32vx/crc32_vx.c:20:10: fatal error: vecintrin.h: No such file or directory\\n   20 | #include <vecintrin.h>\\n      |          ^~~~~~~~~~~~~\\ncompilation terminated.')\n(4, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'O3', '/src/contrib/crc32vx/crc32_vx.c:20:10: fatal error: vecintrin.h: No such file or directory\\n   20 | #include <vecintrin.h>\\n      |          ^~~~~~~~~~~~~\\ncompilation terminated.')\n(5, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'Os', '/src/contrib/crc32vx/crc32_vx.c:20:10: fatal error: vecintrin.h: No such file or directory\\n   20 | #include <vecintrin.h>\\n      |          ^~~~~~~~~~~~~\\ncompilation terminated.')\n(6, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'O0', 'In file included from /src/contrib/crc32vx/crc32_vx.c:20:\\n/usr/lib/llvm-14/lib/clang/14.0.6/include/vecintrin.h:11125:2: error: \"Use -fzvector to enable vector extensions\"\\n#error \"Use -fzvector to enable vector extensions\"\\n ^\\n/src/contrib/crc32vx/crc32_vx.c:79:17: warning: implicit declaration of function \\'vec_insert\\' is invalid in C99 [-Wimplicit-function-declaration]\\n    v0 = (uv2di)vec_insert(crc, (uv4si)v0, 3);\\n                ^\\n/src/contrib/crc32vx/crc32_vx.c:79:10: error: invalid conversion between vector type \\'uv2di\\' (vector of 2 \\'unsigned long long\\' values) and integer type \\'int\\' of different size\\n    v0 = (uv2di)vec_insert(crc, (uv4si)v0, 3);\\n         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\n/src/contrib/crc32vx/crc32_vx.c:82:16: warning: implicit declaration of function \\'vec_perm\\' is invalid in C99 [-Wimplicit-function-declaration]\\n    uv2di v1 = vec_perm(((uv2di *)buf)[0], ((uv2di *)buf)[0], perm_le2be);\\n               ^\\n/src/contrib/crc32vx/crc32_vx.c:82:11: error: initializing \\'uv2di\\' (vector of 2 \\'unsigned long long\\' values) with an expression of incompatible type \\'int\\'\\n    uv2di v1 = vec_perm(((uv2di *)buf)[0], ((uv2di *)buf)[0], perm_le2be);\\n          ^    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\n/src/contrib/crc32vx/crc32_vx.c:83:11: error: initializing \\'uv2di\\' (vector of 2 \\'unsigned long long\\' values) with an expression of incompatible type \\'int\\'\\n    uv2di v2 = vec_perm(((uv2di *)buf)[1], ((uv2di *)buf)[1], perm_le2be);\\n          ^    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\n/src/contrib/crc32vx/crc32_vx.c:84:11: error: initializing \\'uv2di\\' (vector of 2 \\'unsigned long long\\' values) with an expression of incompatible type \\'int\\'\\n    uv2di v3 = vec_perm(((uv2di *)buf)[2], ((uv2di *)buf)[2], perm_le2be);\\n          ^    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\n/src/contrib/crc32vx/crc32_vx.c:85:11: error: initializing \\'uv2di\\' (vector of 2 \\'unsigned long long\\' values) with an expression of incompatible ty')\n(7, 'zlib', 'contrib/crc32vx/crc32_vx.c', 'O1', 'In file included from /src/contrib/crc32vx/crc32_vx.c:20:\\n/usr/",
     "stats": {
-      "rows": 14958,
+      "rows": 16788,
       "columns": 5,
       "profile": {
         "repo": {
@@ -482,8 +516,8 @@
               1450
             ],
             [
-              "pyca/pynacl",
-              1060
+              "darvincisec/DetectTamper",
+              1310
             ]
           ]
         },
@@ -496,6 +530,10 @@
               40
             ],
             [
+              "src/main.c",
+              30
+            ],
+            [
               "bin/echo.c",
               20
             ],
@@ -506,10 +544,6 @@
             [
               "bin/s2nc.c",
               20
-            ],
-            [
-              "bin/s2nd.c",
-              20
             ]
           ]
         },
@@ -519,23 +553,23 @@
           "top": [
             [
               "O0",
-              2992
+              3358
             ],
             [
               "O2",
-              2992
+              3358
             ],
             [
               "O3",
-              2992
+              3358
             ],
             [
               "O1",
-              2991
+              3357
             ],
             [
               "Os",
-              2991
+              3357
             ]
           ]
         },
@@ -544,15 +578,15 @@
         }
       }
     },
-    "content_hash": "4aa809d9950bd278"
+    "content_hash": "050cf9da72529735"
   },
   {
     "id": "facet:skipped.opt_level=O0",
     "kind": "facet",
     "name": "opt_level=O0",
-    "content_sample": "opt_level=O0 in 2992 of 14958 rows",
+    "content_sample": "opt_level=O0 in 3358 of 16788 rows",
     "stats": {
-      "rows": 2992,
+      "rows": 3358,
       "pct": 20.0,
       "table": "table:skipped",
       "column": "opt_level"
@@ -563,9 +597,9 @@
     "id": "facet:skipped.opt_level=O1",
     "kind": "facet",
     "name": "opt_level=O1",
-    "content_sample": "opt_level=O1 in 2991 of 14958 rows",
+    "content_sample": "opt_level=O1 in 3357 of 16788 rows",
     "stats": {
-      "rows": 2991,
+      "rows": 3357,
       "pct": 20.0,
       "table": "table:skipped",
       "column": "opt_level"
@@ -576,9 +610,9 @@
     "id": "facet:skipped.opt_level=O2",
     "kind": "facet",
     "name": "opt_level=O2",
-    "content_sample": "opt_level=O2 in 2992 of 14958 rows",
+    "content_sample": "opt_level=O2 in 3358 of 16788 rows",
     "stats": {
-      "rows": 2992,
+      "rows": 3358,
       "pct": 20.0,
       "table": "table:skipped",
       "column": "opt_level"
@@ -589,9 +623,9 @@
     "id": "facet:skipped.opt_level=O3",
     "kind": "facet",
     "name": "opt_level=O3",
-    "content_sample": "opt_level=O3 in 2992 of 14958 rows",
+    "content_sample": "opt_level=O3 in 3358 of 16788 rows",
     "stats": {
-      "rows": 2992,
+      "rows": 3358,
       "pct": 20.0,
       "table": "table:skipped",
       "column": "opt_level"
@@ -602,9 +636,9 @@
     "id": "facet:skipped.opt_level=Os",
     "kind": "facet",
     "name": "opt_level=Os",
-    "content_sample": "opt_level=Os in 2991 of 14958 rows",
+    "content_sample": "opt_level=Os in 3357 of 16788 rows",
     "stats": {
-      "rows": 2991,
+      "rows": 3357,
       "pct": 20.0,
       "table": "table:skipped",
       "column": "opt_level"
@@ -615,7 +649,7 @@
     "id": "table:repos",
     "kind": "table",
     "name": "repos",
-    "content_sample": "CREATE TABLE repos (\n    id INTEGER PRIMARY KEY, url TEXT, commit_sha TEXT, license TEXT,\n    status TEXT, n_pairs INTEGER, processed_at TEXT\n, reason TEXT, stars INTEGER)\n-- columns: id, url, commit_sha, license, status, n_pairs, processed_at, reason, stars\n-- 116 rows\n-- profile:\n--   url: 20+ distinct, 0.0% null, top: https://github.com/0xilis/libNeoAppleArchive(1), https://github.com/Alon-Alush/AlushPacker(1), https://github.com/BlockstreamResearch/secp256k1-zkp(1), https://github.com/BrianPugh/tamp(1), https://github.com/Cyan4973/FiniteStateEntropy(1)\n--   commit_sha: 20+ distinct, 49.1% null, top: 025cdde5f2574290d8b2a8524bc257db2829bb7c(1), 0975ef72fc3c47b530309ca93937d7d143523628(1), 0d99d1151ff4d929a8ac8f3a191bfec54a10a869(1), 102150ac8ca5d5b8aa4a9ddd897a98e6793b8342(1), 11574d0295771edccadd17af14af74a539f924c7(1)\n--   license: 7 distinct, 0.0% null, top: mit(61), apache-2.0(32), isc(7), bsd-2-clause(6), unlicense(4)\n--   status: 3 distinct, 0.0% null, top: done(59), queued(54), failed(3)\n--   n_pairs: 20+ distinct, 49.1% null, top: 0(11), 9(2), 33(2), 113(1), 117(1)\n--   processed_at: 20+ distinct, 46.6% null, top: 2026-07-11T02:25:09+00:00(1), 2026-07-11T02:59:06+00:00(1), 2026-07-11T03:00:53+00:00(1), 2026-07-11T03:01:53+00:00(1), 2026-07-11T03:12:37+00:00(1)\n--   reason: 3 distinct, 97.4% null, top: [Errno 2] No such file or directory: '/Users/jbradley/.cache/disasm_harvest/dsprenkels__sss/randombytes.c'(1), too many files (1604)(1), too many files (749)(1)\n--   stars: 20+ distinct, 0.0% null, top: 71(5), 46(3), 83(3), 39(2), 40(2)\n-- sample:\n(1, 'https://github.com/dloebl/cgif', 'ee964834c0894258edea1c3ae96583d15daa0c3b', 'mit', 'done', 994, '2026-07-11T02:25:09+00:00', None, 147)\n(2, 'https://github.com/sonos/pyFLAC', 'f54ef7a292d7a704589f2239c7fb2a52424952a2', 'apache-2.0', 'done', 0, '2026-07-11T21:04:27+00:00', None, 144)\n(3, 'https://github.com/fast-pack/MaskedVByte', 'e2298b7a28002e08f3f74755353b7229bfe6475b', 'apache-2.0', 'done', 33, '2026-07-11T21:32:55+00:00', None, 130)\n(4, 'https://github.com/wkoszek/mini_gzip', '9c376de5b9882628bd29f8d80be11b2f909824c2', 'bsd-2-clause', 'done', 485, '2026-07-11T21:34:31+00:00', None, 120)\n(5, 'https://github.com/drichardson/huffman', '102150ac8ca5d5b8aa4a9ddd897a98e6793b8342', 'unlicense', 'done', 165, '2026-07-11T21:34:49+00:00', None, 116)\n(6, 'https://github.com/jibsen/brieflz', 'ad89acf4186adca8ad8c27c4ab376a49ae233cd0', 'zlib', 'done', 273, '2026-07-11T21:35:53+00:00', None, 111)\n(7, 'https://github.com/intel/qpl', None, 'mit', 'queued', None, None, None, 110)\n(8, 'https://github.com/fragglet/lhasa', None, 'isc', 'queued', None, None, None, 104)\n(9, 'https://github.com/fast-pack/LittleIntPacker', None, 'apache-2.0', 'queued', None, None, None, 96)\n(10, 'https://github.com/litespeedtech/ls-qpack', None, 'mit', 'queued', None, None, None, 85)\n(11, 'https://github.com/WangXuan95/TinyZZZ', None, 'mit', 'queued', None, None, None, 81)\n(12, 'https://github.com/emmanuel-marty/em_inflate', None, 'zlib', 'queued', None, None, None, 80)\n(13, 'https://github.com/devinacker/exhal', None, 'mit', 'queued', None, None, None, 75)\n(14, 'https://github.com/BrianPugh/tamp', None, 'apache-2.0', 'queued', None, None, None, 72)\n(15, 'https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_compression', None, 'apache-2.0', 'queued', None, None, None, 71)\n(16, 'https://github.com/DanEngelbrecht/longtail', None, 'mit', 'queued', None, None, None, 65)\n(17, 'https://github.com/aws/s2n-tls', None, 'apache-2.0', 'failed', None, '2026-07-11T02:59:06+00:00', 'too many files (749)', 4739)\n(18, 'https://github.com/ashvardanian/StringZilla', '45b016cc0b6817036f7443c00e0682e942c9c748', 'apache-2.0', 'done', 0, '2026-07-11T03:00:53+00:00', None, 3512)\n(19, 'https://github.com/jedisct1/minisign', '41006b4f33e3277cafc17b28ddf83d4462fbda30', 'isc', 'done', 303, '2026-07-11T03:01:53+00:00', None, 2776)\n(20, 'https://github.com/cossacklabs/themis', 'dc37d03de5069874c2a33223fc947c23b2fa9812', 'apache-2.0', 'done'",
+    "content_sample": "CREATE TABLE repos (\n    id INTEGER PRIMARY KEY, url TEXT, commit_sha TEXT, license TEXT,\n    status TEXT, n_pairs INTEGER, processed_at TEXT\n, reason TEXT, stars INTEGER)\n-- columns: id, url, commit_sha, license, status, n_pairs, processed_at, reason, stars\n-- 116 rows\n-- profile:\n--   url: 20+ distinct, 0.0% null, top: https://github.com/0xilis/libNeoAppleArchive(1), https://github.com/Alon-Alush/AlushPacker(1), https://github.com/BlockstreamResearch/secp256k1-zkp(1), https://github.com/BrianPugh/tamp(1), https://github.com/Cyan4973/FiniteStateEntropy(1)\n--   commit_sha: 20+ distinct, 41.4% null, top: 025cdde5f2574290d8b2a8524bc257db2829bb7c(1), 0975ef72fc3c47b530309ca93937d7d143523628(1), 0d99d1151ff4d929a8ac8f3a191bfec54a10a869(1), 102150ac8ca5d5b8aa4a9ddd897a98e6793b8342(1), 11574d0295771edccadd17af14af74a539f924c7(1)\n--   license: 7 distinct, 0.0% null, top: mit(61), apache-2.0(32), isc(7), bsd-2-clause(6), unlicense(4)\n--   status: 3 distinct, 0.0% null, top: done(68), queued(44), failed(4)\n--   n_pairs: 20+ distinct, 41.4% null, top: 0(14), 9(2), 33(2), 4(1), 113(1)\n--   processed_at: 20+ distinct, 37.9% null, top: 2026-07-11T02:25:09+00:00(1), 2026-07-11T02:59:06+00:00(1), 2026-07-11T03:00:53+00:00(1), 2026-07-11T03:01:53+00:00(1), 2026-07-11T03:12:37+00:00(1)\n--   reason: 4 distinct, 96.6% null, top: [Errno 2] No such file or directory: '/Users/jbradley/.cache/disasm_harvest/dsprenkels__sss/randombytes.c'(1), too many files (1604)(1), too many files (325)(1), too many files (749)(1)\n--   stars: 20+ distinct, 0.0% null, top: 71(5), 46(3), 83(3), 39(2), 40(2)\n-- sample:\n(1, 'https://github.com/dloebl/cgif', 'ee964834c0894258edea1c3ae96583d15daa0c3b', 'mit', 'done', 994, '2026-07-11T02:25:09+00:00', None, 147)\n(2, 'https://github.com/sonos/pyFLAC', 'f54ef7a292d7a704589f2239c7fb2a52424952a2', 'apache-2.0', 'done', 0, '2026-07-11T21:04:27+00:00', None, 144)\n(3, 'https://github.com/fast-pack/MaskedVByte', 'e2298b7a28002e08f3f74755353b7229bfe6475b', 'apache-2.0', 'done', 33, '2026-07-11T21:32:55+00:00', None, 130)\n(4, 'https://github.com/wkoszek/mini_gzip', '9c376de5b9882628bd29f8d80be11b2f909824c2', 'bsd-2-clause', 'done', 485, '2026-07-11T21:34:31+00:00', None, 120)\n(5, 'https://github.com/drichardson/huffman', '102150ac8ca5d5b8aa4a9ddd897a98e6793b8342', 'unlicense', 'done', 165, '2026-07-11T21:34:49+00:00', None, 116)\n(6, 'https://github.com/jibsen/brieflz', 'ad89acf4186adca8ad8c27c4ab376a49ae233cd0', 'zlib', 'done', 273, '2026-07-11T21:35:53+00:00', None, 111)\n(7, 'https://github.com/intel/qpl', None, 'mit', 'failed', None, '2026-07-12T00:20:32+00:00', 'too many files (325)', 110)\n(8, 'https://github.com/fragglet/lhasa', '75ed83559f23e9538e0045c62f53f77ab03d03d6', 'isc', 'done', 1592, '2026-07-12T00:24:57+00:00', None, 104)\n(9, 'https://github.com/fast-pack/LittleIntPacker', '8777f574a5ab3c653881371819383c986292843c', 'apache-2.0', 'done', 1339, '2026-07-12T00:27:06+00:00', None, 96)\n(10, 'https://github.com/litespeedtech/ls-qpack', '475dfa8064fc6ef80035541405b22965cfbd7244', 'mit', 'done', 1306, '2026-07-12T00:37:06+00:00', None, 85)\n(11, 'https://github.com/WangXuan95/TinyZZZ', None, 'mit', 'queued', None, None, None, 81)\n(12, 'https://github.com/emmanuel-marty/em_inflate', None, 'zlib', 'queued', None, None, None, 80)\n(13, 'https://github.com/devinacker/exhal', None, 'mit', 'queued', None, None, None, 75)\n(14, 'https://github.com/BrianPugh/tamp', None, 'apache-2.0', 'queued', None, None, None, 72)\n(15, 'https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_compression', None, 'apache-2.0', 'queued', None, None, None, 71)\n(16, 'https://github.com/DanEngelbrecht/longtail', None, 'mit', 'queued', None, None, None, 65)\n(17, 'https://github.com/aws/s2n-tls', None, 'apache-2.0', 'failed', None, '2026-07-11T02:59:06+00:00', 'too many files (749)', 4739)\n(18, 'https://github.com/ashvardanian/StringZilla', '45b016cc0b6817036f7443c00e0682e942c9c748', 'apache-2.0', 'done', 0, '2026-07-11T03:00:53+00:00', None, 3512)\n(19, 'https://githu",
     "stats": {
       "rows": 116,
       "columns": 9,
@@ -648,7 +682,7 @@
         },
         "commit_sha": {
           "distinct": "20+",
-          "null_pct": 49.1,
+          "null_pct": 41.4,
           "top": [
             [
               "025cdde5f2574290d8b2a8524bc257db2829bb7c",
@@ -704,25 +738,25 @@
           "top": [
             [
               "done",
-              59
+              68
             ],
             [
               "queued",
-              54
+              44
             ],
             [
               "failed",
-              3
+              4
             ]
           ]
         },
         "n_pairs": {
           "distinct": "20+",
-          "null_pct": 49.1,
+          "null_pct": 41.4,
           "top": [
             [
               "0",
-              11
+              14
             ],
             [
               "9",
@@ -733,18 +767,18 @@
               2
             ],
             [
-              "113",
+              "4",
               1
             ],
             [
-              "117",
+              "113",
               1
             ]
           ]
         },
         "processed_at": {
           "distinct": "20+",
-          "null_pct": 46.6,
+          "null_pct": 37.9,
           "top": [
             [
               "2026-07-11T02:25:09+00:00",
@@ -769,8 +803,8 @@
           ]
         },
         "reason": {
-          "distinct": 3,
-          "null_pct": 97.4,
+          "distinct": 4,
+          "null_pct": 96.6,
           "top": [
             [
               "[Errno 2] No such file or directory: '/Users/jbradley/.cache/disasm_harvest/dsprenkels__sss/randombytes.c'",
@@ -778,6 +812,10 @@
             ],
             [
               "too many files (1604)",
+              1
+            ],
+            [
+              "too many files (325)",
               1
             ],
             [
@@ -819,7 +857,46 @@
         "reason=[Errno 2] No such file or directory: '/Users/jbradley/.cache/disasm_harvest/dsprenkels__sss/randombytes.c' x license=bsd-3-clause"
       ]
     },
-    "content_hash": "798be2381162fe06"
+    "content_hash": "ced1ea56b68a3c17"
+  },
+  {
+    "id": "facet:repos.status=done",
+    "kind": "facet",
+    "name": "status=done",
+    "content_sample": "status=done in 68 of 116 rows",
+    "stats": {
+      "rows": 68,
+      "pct": 58.6,
+      "table": "table:repos",
+      "column": "status"
+    },
+    "content_hash": "224c489aad90e71a"
+  },
+  {
+    "id": "facet:repos.status=failed",
+    "kind": "facet",
+    "name": "status=failed",
+    "content_sample": "status=failed in 4 of 116 rows",
+    "stats": {
+      "rows": 4,
+      "pct": 3.4,
+      "table": "table:repos",
+      "column": "status"
+    },
+    "content_hash": "1dc8cb0b99abc085"
+  },
+  {
+    "id": "facet:repos.status=queued",
+    "kind": "facet",
+    "name": "status=queued",
+    "content_sample": "status=queued in 44 of 116 rows",
+    "stats": {
+      "rows": 44,
+      "pct": 37.9,
+      "table": "table:repos",
+      "column": "status"
+    },
+    "content_hash": "28a63de823e13786"
   },
   {
     "id": "facet:repos.reason=[Errno 2] No such file or directory: '/Users/jbradley/.cache/disasm_harvest/dsprenkels__sss/randombytes.c'",
@@ -848,6 +925,19 @@
     "content_hash": "368fa75ceb76923e"
   },
   {
+    "id": "facet:repos.reason=too many files (325)",
+    "kind": "facet",
+    "name": "reason=too many files (325)",
+    "content_sample": "reason=too many files (325) in 1 of 116 rows",
+    "stats": {
+      "rows": 1,
+      "pct": 0.9,
+      "table": "table:repos",
+      "column": "reason"
+    },
+    "content_hash": "887960a246b5e174"
+  },
+  {
     "id": "facet:repos.reason=too many files (749)",
     "kind": "facet",
     "name": "reason=too many files (749)",
@@ -859,45 +949,6 @@
       "column": "reason"
     },
     "content_hash": "13e82a80956ce9e1"
-  },
-  {
-    "id": "facet:repos.status=done",
-    "kind": "facet",
-    "name": "status=done",
-    "content_sample": "status=done in 59 of 116 rows",
-    "stats": {
-      "rows": 59,
-      "pct": 50.9,
-      "table": "table:repos",
-      "column": "status"
-    },
-    "content_hash": "224c489aad90e71a"
-  },
-  {
-    "id": "facet:repos.status=failed",
-    "kind": "facet",
-    "name": "status=failed",
-    "content_sample": "status=failed in 3 of 116 rows",
-    "stats": {
-      "rows": 3,
-      "pct": 2.6,
-      "table": "table:repos",
-      "column": "status"
-    },
-    "content_hash": "1dc8cb0b99abc085"
-  },
-  {
-    "id": "facet:repos.status=queued",
-    "kind": "facet",
-    "name": "status=queued",
-    "content_sample": "status=queued in 54 of 116 rows",
-    "stats": {
-      "rows": 54,
-      "pct": 46.6,
-      "table": "table:repos",
-      "column": "status"
-    },
-    "content_hash": "28a63de823e13786"
   },
   {
     "id": "facet:repos.license=apache-2.0",
@@ -994,9 +1045,9 @@
     "id": "table:pairs_labeled",
     "kind": "table",
     "name": "pairs_labeled",
-    "content_sample": "CREATE VIEW pairs_labeled AS\n        SELECT *, CASE\n            WHEN origin = 'harvest'   THEN 'git-scraper'\n            WHEN origin LIKE 'gen:%'  THEN 'generator'\n            ELSE COALESCE(origin, 'unknown') END AS source_system\n        FROM pairs\n-- columns: id, repo, file_path, func_name, signature, lang, arch, opt_level, obj_format, compiler, source_text, asm_text, source_hash, asm_hash, pair_hash, origin, session, source_system\n-- 94311 rows\n-- profile:\n--   id: 20+ distinct, 0.0% null, top: 1(1), 2(1), 3(1), 4(1), 5(1)\n--   repo: 20+ distinct, 0.0% null, top: resilar/sqleet(17544), gopro/cineform-sdk(11887), celabshq/libcrux(10190), schnaader/precomp-cpp(6930), toprakdeviren/msf(5598)\n--   file_path: 20+ distinct, 0.0% null, top: sqlite3.c(15160), shell.c(2103), src/tests.c(1303), parson.c(1242), src/md4c.c(1202)\n--   func_name: 20+ distinct, 0.0% null, top: main(1977), read_char(177), write_char(166), read(105), prepare_input(93)\n--   signature: text, avg 81 chars\n--   lang: 2 distinct, 0.0% null, top: c(87301), cpp(7010)\n--   arch: 1 distinct, 0.0% null, top: x86_64(94311)\n--   opt_level: 6 distinct, 0.0% null, top: O0(25970), Os(19554), O1(19405), O2(17249), O3(12091)\n--   obj_format: 2 distinct, 0.0% null, top: elf(94269), rawx86_64(42)\n--   compiler: 3 distinct, 0.0% null, top: gcc-12.2.0(49646), clang-14.0.6(44623), asmjit(42)\n--   source_text: text, avg 1910 chars\n--   asm_text: text, avg 8245 chars\n--   source_hash: 20+ distinct, 0.0% null, top: f3a1cc0d6f0c1e5016fe0feaf9c49416ec31ca46(132), 4b3bb5caddc33dcd9c9b6fa5465aa2cea53dd48d(131), 5cb3c8ff069622cf4f246dabb0391f4ea2a6b70a(45), bf936942322763356f7d2290c8219206ce87c159(33), c7fee2f406e12d24a88b86bf76746f938ed64451(28)\n--   asm_hash: 20+ distinct, 0.0% null, top: 0c52d983a1d3eddd0d86a201db43016081c75109(8), 2700cb8a5d194fa98e01bbc02a192a971652c9ff(7), 48db371122eaa8a3370b2a7b12a94bb98d434809(7), 4e3bbda134198ed9e2162da7cdc740e0c4ce83b8(7), 66d402540db5fa283aff8e0f8b88977b5219e9d1(7)\n--   pair_hash: 20+ distinct, 0.0% null, top: 000109fcd4f04d7f80d666b60a2555f224be172a(1), 00016ae20c5f3ac7b53183865cf5effcbf63a5d0(1), 0002087b539d040179c182868fbece01f88bccf2(1), 00021a2c3e1723ca4d3694b95fb41958d67b8a21(1), 00026adee3f5cd5d2ea36091a0af31e7327bd4a1(1)\n--   origin: 3 distinct, 0.0% null, top: harvest(93655), gen:direct(614), gen:hybrid(42)\n--   session: 2 distinct, 99.8% null, top: scrape-20260711T212132Z(177), gen-20260711T211742Z(8)\n--   source_system: 2 distinct, 0.0% null, top: git-scraper(93655), generator(656)\n-- sample:\n(1, 'zlib', 'adler32.c', 'adler32_combine64', 'uLong ZEXPORT adler32_combine64(uLong adler1, uLong adler2, z_off64_t len2)', 'c', 'x86_64', 'O0', 'elf', 'gcc-12.2.0', 'uLong ZEXPORT adler32_combine64(uLong adler1, uLong adler2, z_off64_t len2) {\\n    return adler32_combine_(adler1, adler2, len2);\\n}', '<adler32_combine64>:\\n 767:\\t55                   \\tpush   %rbp\\n 768:\\t48 89 e5             \\tmov    %rsp,%rbp\\n 76b:\\t48 83 ec 18          \\tsub    $0x18,%rsp\\n 76f:\\t48 89 7d f8          \\tmov    %rdi,-0x8(%rbp)\\n 773:\\t48 89 75 f0          \\tmov    %rsi,-0x10(%rbp)\\n 777:\\t48 89 55 e8          \\tmov    %rdx,-0x18(%rbp)\\n 77b:\\t48 8b 55 e8          \\tmov    -0x18(%rbp),%rdx\\n 77f:\\t48 8b 4d f0          \\tmov    -0x10(%rbp),%rcx\\n 783:\\t48 8b 45 f8          \\tmov    -0x8(%rbp),%rax\\n 787:\\t48 89 ce             \\tmov    %rcx,%rsi\\n 78a:\\t48 89 c7             \\tmov    %rax,%rdi\\n 78d:\\te8 59 fe ff ff       \\tcall   5eb <adler32_combine_>\\n 792:\\tc9                   \\tleave\\n 793:\\tc3                   \\tret', '01b5eb32a6bddeb5b0497284196eca65769fc768', '7aab998542a68c39f16dccc350faa388952545ae', '37fdf5ba0c1573967128a36e910a9a1d95636cf7', 'harvest', None, 'git-scraper')\n(2, 'zlib', 'adler32.c', 'adler32_combine', 'uLong ZEXPORT adler32_combine(uLong adler1, uLong adler2, z_off_t len2)', 'c', 'x86_64', 'O0', 'elf', 'gcc-12.2.0', 'uLong ZEXPORT adler32_combine(uLong adler1, uLong adler2, z_off_t len2) {\\n    return adler32_combine_(adler1, adler",
+    "content_sample": "CREATE VIEW pairs_labeled AS\n        SELECT *, CASE\n            WHEN origin = 'harvest'   THEN 'git-scraper'\n            WHEN origin LIKE 'gen:%'  THEN 'generator'\n            ELSE COALESCE(origin, 'unknown') END AS source_system\n        FROM pairs\n-- columns: id, repo, file_path, func_name, signature, lang, arch, opt_level, obj_format, compiler, source_text, asm_text, source_hash, asm_hash, pair_hash, origin, session, source_system\n-- 110256 rows\n-- profile:\n--   id: 20+ distinct, 0.0% null, top: 1(1), 2(1), 3(1), 4(1), 5(1)\n--   repo: 20+ distinct, 0.0% null, top: resilar/sqleet(17544), gopro/cineform-sdk(11887), kala13x/libxutils(10333), celabshq/libcrux(10190), schnaader/precomp-cpp(6930)\n--   file_path: 20+ distinct, 0.0% null, top: sqlite3.c(15160), shell.c(2103), src/tests.c(1303), parson.c(1242), src/md4c.c(1202)\n--   func_name: 20+ distinct, 0.0% null, top: main(2448), read_char(177), write_char(166), read(105), prepare_input(93)\n--   signature: text, avg 81 chars\n--   lang: 2 distinct, 0.0% null, top: c(103246), cpp(7010)\n--   arch: 1 distinct, 0.0% null, top: x86_64(110256)\n--   opt_level: 6 distinct, 0.0% null, top: O0(30123), Os(22945), O1(22767), O2(20141), O3(14038)\n--   obj_format: 2 distinct, 0.0% null, top: elf(110014), rawx86_64(242)\n--   compiler: 3 distinct, 0.0% null, top: gcc-12.2.0(57988), clang-14.0.6(52026), asmjit(242)\n--   source_text: text, avg 1910 chars\n--   asm_text: text, avg 8245 chars\n--   source_hash: 20+ distinct, 0.0% null, top: f3a1cc0d6f0c1e5016fe0feaf9c49416ec31ca46(132), 4b3bb5caddc33dcd9c9b6fa5465aa2cea53dd48d(131), 5cb3c8ff069622cf4f246dabb0391f4ea2a6b70a(45), bf936942322763356f7d2290c8219206ce87c159(33), c7fee2f406e12d24a88b86bf76746f938ed64451(28)\n--   asm_hash: 20+ distinct, 0.0% null, top: 0c52d983a1d3eddd0d86a201db43016081c75109(8), 2700cb8a5d194fa98e01bbc02a192a971652c9ff(7), 48db371122eaa8a3370b2a7b12a94bb98d434809(7), 4e3bbda134198ed9e2162da7cdc740e0c4ce83b8(7), 66d402540db5fa283aff8e0f8b88977b5219e9d1(7)\n--   pair_hash: 20+ distinct, 0.0% null, top: 000109fcd4f04d7f80d666b60a2555f224be172a(1), 00016ae20c5f3ac7b53183865cf5effcbf63a5d0(1), 0002087b539d040179c182868fbece01f88bccf2(1), 00021a2c3e1723ca4d3694b95fb41958d67b8a21(1), 00026adee3f5cd5d2ea36091a0af31e7327bd4a1(1)\n--   origin: 3 distinct, 0.0% null, top: harvest(108586), gen:direct(1428), gen:hybrid(242)\n--   session: 4 distinct, 85.4% null, top: scrape-20260712T002029Z(14931), gen-20260712T002030Z(1014), scrape-20260711T212132Z(177), gen-20260711T211742Z(8)\n--   source_system: 2 distinct, 0.0% null, top: git-scraper(108586), generator(1670)\n-- sample:\n(1, 'zlib', 'adler32.c', 'adler32_combine64', 'uLong ZEXPORT adler32_combine64(uLong adler1, uLong adler2, z_off64_t len2)', 'c', 'x86_64', 'O0', 'elf', 'gcc-12.2.0', 'uLong ZEXPORT adler32_combine64(uLong adler1, uLong adler2, z_off64_t len2) {\\n    return adler32_combine_(adler1, adler2, len2);\\n}', '<adler32_combine64>:\\n 767:\\t55                   \\tpush   %rbp\\n 768:\\t48 89 e5             \\tmov    %rsp,%rbp\\n 76b:\\t48 83 ec 18          \\tsub    $0x18,%rsp\\n 76f:\\t48 89 7d f8          \\tmov    %rdi,-0x8(%rbp)\\n 773:\\t48 89 75 f0          \\tmov    %rsi,-0x10(%rbp)\\n 777:\\t48 89 55 e8          \\tmov    %rdx,-0x18(%rbp)\\n 77b:\\t48 8b 55 e8          \\tmov    -0x18(%rbp),%rdx\\n 77f:\\t48 8b 4d f0          \\tmov    -0x10(%rbp),%rcx\\n 783:\\t48 8b 45 f8          \\tmov    -0x8(%rbp),%rax\\n 787:\\t48 89 ce             \\tmov    %rcx,%rsi\\n 78a:\\t48 89 c7             \\tmov    %rax,%rdi\\n 78d:\\te8 59 fe ff ff       \\tcall   5eb <adler32_combine_>\\n 792:\\tc9                   \\tleave\\n 793:\\tc3                   \\tret', '01b5eb32a6bddeb5b0497284196eca65769fc768', '7aab998542a68c39f16dccc350faa388952545ae', '37fdf5ba0c1573967128a36e910a9a1d95636cf7', 'harvest', None, 'git-scraper')\n(2, 'zlib', 'adler32.c', 'adler32_combine', 'uLong ZEXPORT adler32_combine(uLong adler1, uLong adler2, z_off_t len2)', 'c', 'x86_64', 'O0', 'elf', 'gcc-12.2.0', 'uLong ZEXPORT adler32_combine(uLong adler1, ",
     "stats": {
-      "rows": 94311,
+      "rows": 110256,
       "columns": 18,
       "profile": {
         "id": {
@@ -1038,16 +1089,16 @@
               11887
             ],
             [
+              "kala13x/libxutils",
+              10333
+            ],
+            [
               "celabshq/libcrux",
               10190
             ],
             [
               "schnaader/precomp-cpp",
               6930
-            ],
-            [
-              "toprakdeviren/msf",
-              5598
             ]
           ]
         },
@@ -1083,7 +1134,7 @@
           "top": [
             [
               "main",
-              1977
+              2448
             ],
             [
               "read_char",
@@ -1112,7 +1163,7 @@
           "top": [
             [
               "c",
-              87301
+              103246
             ],
             [
               "cpp",
@@ -1126,7 +1177,7 @@
           "top": [
             [
               "x86_64",
-              94311
+              110256
             ]
           ]
         },
@@ -1136,23 +1187,23 @@
           "top": [
             [
               "O0",
-              25970
+              30123
             ],
             [
               "Os",
-              19554
+              22945
             ],
             [
               "O1",
-              19405
+              22767
             ],
             [
               "O2",
-              17249
+              20141
             ],
             [
               "O3",
-              12091
+              14038
             ]
           ]
         },
@@ -1162,11 +1213,11 @@
           "top": [
             [
               "elf",
-              94269
+              110014
             ],
             [
               "rawx86_64",
-              42
+              242
             ]
           ]
         },
@@ -1176,15 +1227,15 @@
           "top": [
             [
               "gcc-12.2.0",
-              49646
+              57988
             ],
             [
               "clang-14.0.6",
-              44623
+              52026
             ],
             [
               "asmjit",
-              42
+              242
             ]
           ]
         },
@@ -1278,22 +1329,30 @@
           "top": [
             [
               "harvest",
-              93655
+              108586
             ],
             [
               "gen:direct",
-              614
+              1428
             ],
             [
               "gen:hybrid",
-              42
+              242
             ]
           ]
         },
         "session": {
-          "distinct": 2,
-          "null_pct": 99.8,
+          "distinct": 4,
+          "null_pct": 85.4,
           "top": [
+            [
+              "scrape-20260712T002029Z",
+              14931
+            ],
+            [
+              "gen-20260712T002030Z",
+              1014
+            ],
             [
               "scrape-20260711T212132Z",
               177
@@ -1310,31 +1369,31 @@
           "top": [
             [
               "git-scraper",
-              93655
+              108586
             ],
             [
               "generator",
-              656
+              1670
             ]
           ]
         }
       },
       "coverage_gaps": [
-        "lang=cpp x compiler=asmjit",
-        "lang=cpp x obj_format=rawx86_64",
-        "lang=cpp x session=gen-20260711T211742Z"
+        "compiler=asmjit x origin=gen:direct",
+        "compiler=asmjit x origin=harvest",
+        "compiler=clang-14.0.6 x origin=gen:hybrid"
       ]
     },
-    "content_hash": "42b3730859f4a54e"
+    "content_hash": "242d04d4866a3e2f"
   },
   {
     "id": "facet:pairs_labeled.lang=c",
     "kind": "facet",
     "name": "lang=c",
-    "content_sample": "lang=c in 87301 of 94311 rows",
+    "content_sample": "lang=c in 103246 of 110256 rows",
     "stats": {
-      "rows": 87301,
-      "pct": 92.6,
+      "rows": 103246,
+      "pct": 93.6,
       "table": "table:pairs_labeled",
       "column": "lang"
     },
@@ -1344,10 +1403,10 @@
     "id": "facet:pairs_labeled.lang=cpp",
     "kind": "facet",
     "name": "lang=cpp",
-    "content_sample": "lang=cpp in 7010 of 94311 rows",
+    "content_sample": "lang=cpp in 7010 of 110256 rows",
     "stats": {
       "rows": 7010,
-      "pct": 7.4,
+      "pct": 6.4,
       "table": "table:pairs_labeled",
       "column": "lang"
     },
@@ -1357,10 +1416,10 @@
     "id": "facet:pairs_labeled.obj_format=elf",
     "kind": "facet",
     "name": "obj_format=elf",
-    "content_sample": "obj_format=elf in 94269 of 94311 rows",
+    "content_sample": "obj_format=elf in 110014 of 110256 rows",
     "stats": {
-      "rows": 94269,
-      "pct": 100.0,
+      "rows": 110014,
+      "pct": 99.8,
       "table": "table:pairs_labeled",
       "column": "obj_format"
     },
@@ -1370,49 +1429,23 @@
     "id": "facet:pairs_labeled.obj_format=rawx86_64",
     "kind": "facet",
     "name": "obj_format=rawx86_64",
-    "content_sample": "obj_format=rawx86_64 in 42 of 94311 rows",
+    "content_sample": "obj_format=rawx86_64 in 242 of 110256 rows",
     "stats": {
-      "rows": 42,
-      "pct": 0.0,
+      "rows": 242,
+      "pct": 0.2,
       "table": "table:pairs_labeled",
       "column": "obj_format"
     },
     "content_hash": "1e6b83f010946078"
   },
   {
-    "id": "facet:pairs_labeled.session=gen-20260711T211742Z",
-    "kind": "facet",
-    "name": "session=gen-20260711T211742Z",
-    "content_sample": "session=gen-20260711T211742Z in 8 of 94311 rows",
-    "stats": {
-      "rows": 8,
-      "pct": 0.0,
-      "table": "table:pairs_labeled",
-      "column": "session"
-    },
-    "content_hash": "8e06d66e983528c1"
-  },
-  {
-    "id": "facet:pairs_labeled.session=scrape-20260711T212132Z",
-    "kind": "facet",
-    "name": "session=scrape-20260711T212132Z",
-    "content_sample": "session=scrape-20260711T212132Z in 177 of 94311 rows",
-    "stats": {
-      "rows": 177,
-      "pct": 0.2,
-      "table": "table:pairs_labeled",
-      "column": "session"
-    },
-    "content_hash": "ee0b0dc831845010"
-  },
-  {
     "id": "facet:pairs_labeled.source_system=generator",
     "kind": "facet",
     "name": "source_system=generator",
-    "content_sample": "source_system=generator in 656 of 94311 rows",
+    "content_sample": "source_system=generator in 1670 of 110256 rows",
     "stats": {
-      "rows": 656,
-      "pct": 0.7,
+      "rows": 1670,
+      "pct": 1.5,
       "table": "table:pairs_labeled",
       "column": "source_system"
     },
@@ -1422,10 +1455,10 @@
     "id": "facet:pairs_labeled.source_system=git-scraper",
     "kind": "facet",
     "name": "source_system=git-scraper",
-    "content_sample": "source_system=git-scraper in 93655 of 94311 rows",
+    "content_sample": "source_system=git-scraper in 108586 of 110256 rows",
     "stats": {
-      "rows": 93655,
-      "pct": 99.3,
+      "rows": 108586,
+      "pct": 98.5,
       "table": "table:pairs_labeled",
       "column": "source_system"
     },
@@ -1435,10 +1468,10 @@
     "id": "facet:pairs_labeled.compiler=asmjit",
     "kind": "facet",
     "name": "compiler=asmjit",
-    "content_sample": "compiler=asmjit in 42 of 94311 rows",
+    "content_sample": "compiler=asmjit in 242 of 110256 rows",
     "stats": {
-      "rows": 42,
-      "pct": 0.0,
+      "rows": 242,
+      "pct": 0.2,
       "table": "table:pairs_labeled",
       "column": "compiler"
     },
@@ -1448,10 +1481,10 @@
     "id": "facet:pairs_labeled.compiler=clang-14.0.6",
     "kind": "facet",
     "name": "compiler=clang-14.0.6",
-    "content_sample": "compiler=clang-14.0.6 in 44623 of 94311 rows",
+    "content_sample": "compiler=clang-14.0.6 in 52026 of 110256 rows",
     "stats": {
-      "rows": 44623,
-      "pct": 47.3,
+      "rows": 52026,
+      "pct": 47.2,
       "table": "table:pairs_labeled",
       "column": "compiler"
     },
@@ -1461,13 +1494,52 @@
     "id": "facet:pairs_labeled.compiler=gcc-12.2.0",
     "kind": "facet",
     "name": "compiler=gcc-12.2.0",
-    "content_sample": "compiler=gcc-12.2.0 in 49646 of 94311 rows",
+    "content_sample": "compiler=gcc-12.2.0 in 57988 of 110256 rows",
     "stats": {
-      "rows": 49646,
+      "rows": 57988,
       "pct": 52.6,
       "table": "table:pairs_labeled",
       "column": "compiler"
     },
     "content_hash": "3f98463f50c4815f"
+  },
+  {
+    "id": "facet:pairs_labeled.origin=gen:direct",
+    "kind": "facet",
+    "name": "origin=gen:direct",
+    "content_sample": "origin=gen:direct in 1428 of 110256 rows",
+    "stats": {
+      "rows": 1428,
+      "pct": 1.3,
+      "table": "table:pairs_labeled",
+      "column": "origin"
+    },
+    "content_hash": "1a6005253dbf298f"
+  },
+  {
+    "id": "facet:pairs_labeled.origin=gen:hybrid",
+    "kind": "facet",
+    "name": "origin=gen:hybrid",
+    "content_sample": "origin=gen:hybrid in 242 of 110256 rows",
+    "stats": {
+      "rows": 242,
+      "pct": 0.2,
+      "table": "table:pairs_labeled",
+      "column": "origin"
+    },
+    "content_hash": "284166deac9662fb"
+  },
+  {
+    "id": "facet:pairs_labeled.origin=harvest",
+    "kind": "facet",
+    "name": "origin=harvest",
+    "content_sample": "origin=harvest in 108586 of 110256 rows",
+    "stats": {
+      "rows": 108586,
+      "pct": 98.5,
+      "table": "table:pairs_labeled",
+      "column": "origin"
+    },
+    "content_hash": "2022f9a00bb0a749"
   }
 ]

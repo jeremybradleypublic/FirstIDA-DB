@@ -4,73 +4,85 @@
       "id": "facet:pairs.compiler=asmjit",
       "name": "compiler=asmjit",
       "kind": "facet",
-      "theme": 1
+      "theme": 0
     },
     {
       "id": "facet:pairs.compiler=clang-14.0.6",
       "name": "compiler=clang-14.0.6",
       "kind": "facet",
-      "theme": 1
+      "theme": 0
     },
     {
       "id": "facet:pairs.compiler=gcc-12.2.0",
       "name": "compiler=gcc-12.2.0",
       "kind": "facet",
-      "theme": 1
+      "theme": 0
     },
     {
       "id": "facet:pairs.lang=c",
       "name": "lang=c",
       "kind": "facet",
-      "theme": 1
+      "theme": 0
     },
     {
       "id": "facet:pairs.lang=cpp",
       "name": "lang=cpp",
       "kind": "facet",
-      "theme": 1
+      "theme": 0
     },
     {
       "id": "facet:pairs.obj_format=elf",
       "name": "obj_format=elf",
       "kind": "facet",
-      "theme": 1
+      "theme": 0
     },
     {
       "id": "facet:pairs.obj_format=rawx86_64",
       "name": "obj_format=rawx86_64",
       "kind": "facet",
-      "theme": 1
+      "theme": 0
     },
     {
       "id": "facet:pairs.origin=gen:direct",
       "name": "origin=gen:direct",
       "kind": "facet",
-      "theme": 1
+      "theme": 0
     },
     {
       "id": "facet:pairs.origin=gen:hybrid",
       "name": "origin=gen:hybrid",
       "kind": "facet",
-      "theme": 1
+      "theme": 0
     },
     {
       "id": "facet:pairs.origin=harvest",
       "name": "origin=harvest",
       "kind": "facet",
-      "theme": 1
+      "theme": 0
     },
     {
       "id": "facet:pairs.session=gen-20260711T211742Z",
       "name": "session=gen-20260711T211742Z",
       "kind": "facet",
-      "theme": 1
+      "theme": 0
+    },
+    {
+      "id": "facet:pairs.session=gen-20260712T002030Z",
+      "name": "session=gen-20260712T002030Z",
+      "kind": "facet",
+      "theme": 0
     },
     {
       "id": "facet:pairs.session=scrape-20260711T212132Z",
       "name": "session=scrape-20260711T212132Z",
       "kind": "facet",
-      "theme": 1
+      "theme": 0
+    },
+    {
+      "id": "facet:pairs.session=scrape-20260712T002029Z",
+      "name": "session=scrape-20260712T002029Z",
+      "kind": "facet",
+      "theme": 0
     },
     {
       "id": "facet:pairs_labeled.compiler=asmjit",
@@ -115,14 +127,20 @@
       "theme": 2
     },
     {
-      "id": "facet:pairs_labeled.session=gen-20260711T211742Z",
-      "name": "session=gen-20260711T211742Z",
+      "id": "facet:pairs_labeled.origin=gen:direct",
+      "name": "origin=gen:direct",
       "kind": "facet",
       "theme": 2
     },
     {
-      "id": "facet:pairs_labeled.session=scrape-20260711T212132Z",
-      "name": "session=scrape-20260711T212132Z",
+      "id": "facet:pairs_labeled.origin=gen:hybrid",
+      "name": "origin=gen:hybrid",
+      "kind": "facet",
+      "theme": 2
+    },
+    {
+      "id": "facet:pairs_labeled.origin=harvest",
+      "name": "origin=harvest",
       "kind": "facet",
       "theme": 2
     },
@@ -142,79 +160,85 @@
       "id": "facet:repos.license=apache-2.0",
       "name": "license=apache-2.0",
       "kind": "facet",
-      "theme": 0
+      "theme": 1
     },
     {
       "id": "facet:repos.license=bsd-2-clause",
       "name": "license=bsd-2-clause",
       "kind": "facet",
-      "theme": 0
+      "theme": 1
     },
     {
       "id": "facet:repos.license=bsd-3-clause",
       "name": "license=bsd-3-clause",
       "kind": "facet",
-      "theme": 0
+      "theme": 1
     },
     {
       "id": "facet:repos.license=isc",
       "name": "license=isc",
       "kind": "facet",
-      "theme": 0
+      "theme": 1
     },
     {
       "id": "facet:repos.license=mit",
       "name": "license=mit",
       "kind": "facet",
-      "theme": 0
+      "theme": 1
     },
     {
       "id": "facet:repos.license=unlicense",
       "name": "license=unlicense",
       "kind": "facet",
-      "theme": 0
+      "theme": 1
     },
     {
       "id": "facet:repos.license=zlib",
       "name": "license=zlib",
       "kind": "facet",
-      "theme": 0
+      "theme": 1
     },
     {
       "id": "facet:repos.reason=[Errno 2] No such file or directory: '/Users/jbradley/.cache/disasm_harvest/dsprenkels__sss/randombytes.c'",
       "name": "reason=[Errno 2] No such file or directory: '/Users/jbradley/.cache/disasm_harvest/dsprenkels__sss/randombytes.c'",
       "kind": "facet",
-      "theme": 0
+      "theme": 1
     },
     {
       "id": "facet:repos.reason=too many files (1604)",
       "name": "reason=too many files (1604)",
       "kind": "facet",
-      "theme": 0
+      "theme": 1
+    },
+    {
+      "id": "facet:repos.reason=too many files (325)",
+      "name": "reason=too many files (325)",
+      "kind": "facet",
+      "theme": 1
     },
     {
       "id": "facet:repos.reason=too many files (749)",
       "name": "reason=too many files (749)",
       "kind": "facet",
-      "theme": 0
+      "theme": 1
     },
     {
       "id": "facet:repos.status=done",
       "name": "status=done",
       "kind": "facet",
-      "theme": 0
+      "theme": 1
     },
     {
       "id": "facet:repos.status=failed",
       "name": "status=failed",
       "kind": "facet",
-      "theme": 0
+      "theme": 1
     },
     {
       "id": "facet:repos.status=queued",
       "name": "status=queued",
       "kind": "facet",
-      "theme": 0
+      "theme": 1
     },
     {
       "id": "facet:skipped.opt_level=O0",
@@ -250,7 +274,7 @@
       "id": "table:pairs",
       "name": "pairs",
       "kind": "table",
-      "theme": 1
+      "theme": 0
     },
     {
       "id": "table:pairs_labeled",
@@ -262,7 +286,7 @@
       "id": "table:repos",
       "name": "repos",
       "kind": "table",
-      "theme": 0
+      "theme": 1
     },
     {
       "id": "table:skipped",
@@ -305,26 +329,6 @@
     {
       "source": "table:pairs",
       "target": "facet:pairs.obj_format=rawx86_64",
-      "relations": [
-        [
-          "has_value",
-          "EXTRACTED"
-        ]
-      ]
-    },
-    {
-      "source": "table:pairs",
-      "target": "facet:pairs.session=gen-20260711T211742Z",
-      "relations": [
-        [
-          "has_value",
-          "EXTRACTED"
-        ]
-      ]
-    },
-    {
-      "source": "table:pairs",
-      "target": "facet:pairs.session=scrape-20260711T212132Z",
       "relations": [
         [
           "has_value",
@@ -385,6 +389,46 @@
     {
       "source": "table:pairs",
       "target": "facet:pairs.origin=harvest",
+      "relations": [
+        [
+          "has_value",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "table:pairs",
+      "target": "facet:pairs.session=gen-20260711T211742Z",
+      "relations": [
+        [
+          "has_value",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "table:pairs",
+      "target": "facet:pairs.session=gen-20260712T002030Z",
+      "relations": [
+        [
+          "has_value",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "table:pairs",
+      "target": "facet:pairs.session=scrape-20260711T212132Z",
+      "relations": [
+        [
+          "has_value",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "table:pairs",
+      "target": "facet:pairs.session=scrape-20260712T002029Z",
       "relations": [
         [
           "has_value",
@@ -459,6 +503,10 @@
         [
           "shared_column:source_text",
           "EXTRACTED"
+        ],
+        [
+          "view over",
+          "EXTRACTED"
         ]
       ]
     },
@@ -507,7 +555,7 @@
       "target": "facet:pairs.obj_format=elf",
       "relations": [
         [
-          "co_occurs:87259",
+          "co_occurs:103004",
           "EXTRACTED"
         ]
       ]
@@ -517,7 +565,7 @@
       "target": "facet:pairs.compiler=gcc-12.2.0",
       "relations": [
         [
-          "co_occurs:45988",
+          "co_occurs:54330",
           "EXTRACTED"
         ]
       ]
@@ -527,7 +575,7 @@
       "target": "facet:pairs.compiler=clang-14.0.6",
       "relations": [
         [
-          "co_occurs:41271",
+          "co_occurs:48674",
           "EXTRACTED"
         ]
       ]
@@ -537,7 +585,17 @@
       "target": "facet:pairs.origin=harvest",
       "relations": [
         [
-          "co_occurs:86840",
+          "co_occurs:101771",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "facet:pairs.lang=c",
+      "target": "facet:pairs.session=scrape-20260712T002029Z",
+      "relations": [
+        [
+          "co_occurs:14931",
           "EXTRACTED"
         ]
       ]
@@ -567,7 +625,7 @@
       "target": "facet:pairs.compiler=gcc-12.2.0",
       "relations": [
         [
-          "co_occurs:49646",
+          "co_occurs:57988",
           "EXTRACTED"
         ]
       ]
@@ -577,7 +635,7 @@
       "target": "facet:pairs.compiler=clang-14.0.6",
       "relations": [
         [
-          "co_occurs:44623",
+          "co_occurs:52026",
           "EXTRACTED"
         ]
       ]
@@ -587,7 +645,17 @@
       "target": "facet:pairs.origin=harvest",
       "relations": [
         [
-          "co_occurs:93655",
+          "co_occurs:108586",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "facet:pairs.obj_format=elf",
+      "target": "facet:pairs.session=scrape-20260712T002029Z",
+      "relations": [
+        [
+          "co_occurs:14931",
           "EXTRACTED"
         ]
       ]
@@ -597,7 +665,17 @@
       "target": "facet:pairs.origin=harvest",
       "relations": [
         [
-          "co_occurs:44365",
+          "co_occurs:51401",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "facet:pairs.compiler=clang-14.0.6",
+      "target": "facet:pairs.session=scrape-20260712T002029Z",
+      "relations": [
+        [
+          "co_occurs:7036",
           "EXTRACTED"
         ]
       ]
@@ -607,7 +685,27 @@
       "target": "facet:pairs.origin=harvest",
       "relations": [
         [
-          "co_occurs:49290",
+          "co_occurs:57185",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "facet:pairs.compiler=gcc-12.2.0",
+      "target": "facet:pairs.session=scrape-20260712T002029Z",
+      "relations": [
+        [
+          "co_occurs:7895",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "facet:pairs.origin=harvest",
+      "target": "facet:pairs.session=scrape-20260712T002029Z",
+      "relations": [
+        [
+          "co_occurs:14931",
           "EXTRACTED"
         ]
       ]
@@ -695,36 +793,10 @@
         [
           "repo whose files were skipped",
           "INFERRED"
-        ]
-      ]
-    },
-    {
-      "source": "table:repos",
-      "target": "facet:repos.reason=[Errno 2] No such file or directory: '/Users/jbradley/.cache/disasm_harvest/dsprenkels__sss/randombytes.c'",
-      "relations": [
+        ],
         [
-          "has_value",
-          "EXTRACTED"
-        ]
-      ]
-    },
-    {
-      "source": "table:repos",
-      "target": "facet:repos.reason=too many files (1604)",
-      "relations": [
-        [
-          "has_value",
-          "EXTRACTED"
-        ]
-      ]
-    },
-    {
-      "source": "table:repos",
-      "target": "facet:repos.reason=too many files (749)",
-      "relations": [
-        [
-          "has_value",
-          "EXTRACTED"
+          "failures from harvested repos",
+          "INFERRED"
         ]
       ]
     },
@@ -751,6 +823,46 @@
     {
       "source": "table:repos",
       "target": "facet:repos.status=queued",
+      "relations": [
+        [
+          "has_value",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "table:repos",
+      "target": "facet:repos.reason=[Errno 2] No such file or directory: '/Users/jbradley/.cache/disasm_harvest/dsprenkels__sss/randombytes.c'",
+      "relations": [
+        [
+          "has_value",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "table:repos",
+      "target": "facet:repos.reason=too many files (1604)",
+      "relations": [
+        [
+          "has_value",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "table:repos",
+      "target": "facet:repos.reason=too many files (325)",
+      "relations": [
+        [
+          "has_value",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "table:repos",
+      "target": "facet:repos.reason=too many files (749)",
       "relations": [
         [
           "has_value",
@@ -833,7 +945,7 @@
       "target": "facet:repos.license=mit",
       "relations": [
         [
-          "co_occurs:27",
+          "co_occurs:32",
           "EXTRACTED"
         ]
       ]
@@ -843,7 +955,17 @@
       "target": "facet:repos.license=apache-2.0",
       "relations": [
         [
-          "co_occurs:19",
+          "co_occurs:20",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "facet:repos.status=done",
+      "target": "facet:repos.license=isc",
+      "relations": [
+        [
+          "co_occurs:5",
           "EXTRACTED"
         ]
       ]
@@ -853,7 +975,7 @@
       "target": "facet:repos.license=mit",
       "relations": [
         [
-          "co_occurs:33",
+          "co_occurs:27",
           "EXTRACTED"
         ]
       ]
@@ -863,7 +985,7 @@
       "target": "facet:repos.license=apache-2.0",
       "relations": [
         [
-          "co_occurs:11",
+          "co_occurs:10",
           "EXTRACTED"
         ]
       ]
@@ -901,26 +1023,6 @@
     {
       "source": "table:pairs_labeled",
       "target": "facet:pairs_labeled.obj_format=rawx86_64",
-      "relations": [
-        [
-          "has_value",
-          "EXTRACTED"
-        ]
-      ]
-    },
-    {
-      "source": "table:pairs_labeled",
-      "target": "facet:pairs_labeled.session=gen-20260711T211742Z",
-      "relations": [
-        [
-          "has_value",
-          "EXTRACTED"
-        ]
-      ]
-    },
-    {
-      "source": "table:pairs_labeled",
-      "target": "facet:pairs_labeled.session=scrape-20260711T212132Z",
       "relations": [
         [
           "has_value",
@@ -979,11 +1081,41 @@
       ]
     },
     {
+      "source": "table:pairs_labeled",
+      "target": "facet:pairs_labeled.origin=gen:direct",
+      "relations": [
+        [
+          "has_value",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "table:pairs_labeled",
+      "target": "facet:pairs_labeled.origin=gen:hybrid",
+      "relations": [
+        [
+          "has_value",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "table:pairs_labeled",
+      "target": "facet:pairs_labeled.origin=harvest",
+      "relations": [
+        [
+          "has_value",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
       "source": "facet:pairs_labeled.lang=c",
       "target": "facet:pairs_labeled.obj_format=elf",
       "relations": [
         [
-          "co_occurs:87259",
+          "co_occurs:103004",
           "EXTRACTED"
         ]
       ]
@@ -993,7 +1125,7 @@
       "target": "facet:pairs_labeled.source_system=git-scraper",
       "relations": [
         [
-          "co_occurs:86840",
+          "co_occurs:101771",
           "EXTRACTED"
         ]
       ]
@@ -1003,7 +1135,7 @@
       "target": "facet:pairs_labeled.compiler=gcc-12.2.0",
       "relations": [
         [
-          "co_occurs:45988",
+          "co_occurs:54330",
           "EXTRACTED"
         ]
       ]
@@ -1013,7 +1145,17 @@
       "target": "facet:pairs_labeled.compiler=clang-14.0.6",
       "relations": [
         [
-          "co_occurs:41271",
+          "co_occurs:48674",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "facet:pairs_labeled.lang=c",
+      "target": "facet:pairs_labeled.origin=harvest",
+      "relations": [
+        [
+          "co_occurs:101771",
           "EXTRACTED"
         ]
       ]
@@ -1039,11 +1181,21 @@
       ]
     },
     {
+      "source": "facet:pairs_labeled.lang=cpp",
+      "target": "facet:pairs_labeled.origin=harvest",
+      "relations": [
+        [
+          "co_occurs:6815",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
       "source": "facet:pairs_labeled.obj_format=elf",
       "target": "facet:pairs_labeled.source_system=git-scraper",
       "relations": [
         [
-          "co_occurs:93655",
+          "co_occurs:108586",
           "EXTRACTED"
         ]
       ]
@@ -1053,7 +1205,7 @@
       "target": "facet:pairs_labeled.compiler=gcc-12.2.0",
       "relations": [
         [
-          "co_occurs:49646",
+          "co_occurs:57988",
           "EXTRACTED"
         ]
       ]
@@ -1063,7 +1215,17 @@
       "target": "facet:pairs_labeled.compiler=clang-14.0.6",
       "relations": [
         [
-          "co_occurs:44623",
+          "co_occurs:52026",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "facet:pairs_labeled.obj_format=elf",
+      "target": "facet:pairs_labeled.origin=harvest",
+      "relations": [
+        [
+          "co_occurs:108586",
           "EXTRACTED"
         ]
       ]
@@ -1073,7 +1235,7 @@
       "target": "facet:pairs_labeled.compiler=gcc-12.2.0",
       "relations": [
         [
-          "co_occurs:49290",
+          "co_occurs:57185",
           "EXTRACTED"
         ]
       ]
@@ -1083,7 +1245,37 @@
       "target": "facet:pairs_labeled.compiler=clang-14.0.6",
       "relations": [
         [
-          "co_occurs:44365",
+          "co_occurs:51401",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "facet:pairs_labeled.source_system=git-scraper",
+      "target": "facet:pairs_labeled.origin=harvest",
+      "relations": [
+        [
+          "co_occurs:108586",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "facet:pairs_labeled.compiler=clang-14.0.6",
+      "target": "facet:pairs_labeled.origin=harvest",
+      "relations": [
+        [
+          "co_occurs:51401",
+          "EXTRACTED"
+        ]
+      ]
+    },
+    {
+      "source": "facet:pairs_labeled.compiler=gcc-12.2.0",
+      "target": "facet:pairs_labeled.origin=harvest",
+      "relations": [
+        [
+          "co_occurs:57185",
           "EXTRACTED"
         ]
       ]

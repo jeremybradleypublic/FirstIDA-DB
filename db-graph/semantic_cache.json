@@ -61,5 +61,36 @@
       "n-pairs",
       "stars"
     ]
+  },
+  "b697d600ae6f5ba6": {
+    "gist": "The core dataset: 110K source-function/disassembly pairs harvested from 100+ C/C++ repos, compiled at six optimization levels with gcc-12.2.0 and clang-14.0.6 to x86_64 ELF; each row carries source_text, asm_text, and dedup hashes.",
+    "keywords": [
+      "disassembly-pairs",
+      "compilation-matrix",
+      "x86_64"
+    ]
+  },
+  "050cf9da72529735": {
+    "gist": "Compilation failures log: 16K files that could not be compiled (missing headers, platform intrinsics, node bindings), evenly spread across the five optimization levels; reason holds the raw compiler error.",
+    "keywords": [
+      "compile-errors",
+      "skip-log"
+    ]
+  },
+  "ced1ea56b68a3c17": {
+    "gist": "Provenance registry of the 116 harvested GitHub repos: url, pinned commit, license (mostly MIT/Apache-2.0), pipeline status (done/queued/failed), pair counts and star counts.",
+    "keywords": [
+      "provenance",
+      "licenses",
+      "harvest-status"
+    ]
+  },
+  "242d04d4866a3e2f": {
+    "gist": "A view over pairs adding source_system (git-scraper vs generator) derived from origin - the training-consumption surface of the same 110K rows.",
+    "keywords": [
+      "view",
+      "source-system",
+      "training-surface"
+    ]
   }
 }
